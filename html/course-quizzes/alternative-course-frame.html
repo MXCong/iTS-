@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui-slide.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/custom.css" />
+		<script type="text/javascript" src="../../script/aui/aui-slide.js"></script>
+		<script src="../../script/api.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body style="background:#f2f2f2;">
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				<img src="../../image/yuxi.png" width="20" height="20">
+				<span class="aui-margin-l-5">当前不在上课时间哦~ 提前准备习题吧</span>
+			</div>
+		</div>
+		<section class="aui-content-padded" onclick="alternative();">
+			<div class="aui-card-list keepactive">
+				<div class="keepmark"></div>
+				<div class="card-left">
+					<p class="class-name">
+						软件工程(13级软件工程1班)
+					</p>
+					<p class="class-sign">
+						授课名称
+					</p>
+				</div>
+				<div class="card-right">
+					<p class="class-name">
+						30
+					</p>
+					<p class="class-sign">
+						备选题
+					</p>
+				</div>
+			</div>
+		</section>
+		<section class="aui-content-padded">
+			<div class="aui-card-list">
+				<div class="card-left">
+					<p class="class-name">
+						软件工程当前不在上课时间哦
+					</p>
+					<p class="class-sign">
+						授课名称
+					</p>
+				</div>
+				<div class="card-right">
+					<p class="class-name">
+						30
+					</p>
+					<p class="class-sign">
+						备选题
+					</p>
+				</div>
+			</div>
+		</section>
+		<section class="aui-content-padded" onclick="alternative();">
+			<div class="aui-card-list keepactive">
+				<div class="keepmark"></div>
+				<div class="card-left">
+					<p class="class-name">
+						软件工程(13级软件工程1班课时间哦
+					</p>
+					<p class="class-sign">
+						授课名称
+					</p>
+				</div>
+				<div class="card-right">
+					<p class="class-name">
+						30
+					</p>
+					<p class="class-sign">
+						题目总数
+					</p>
+				</div>
+			</div>
+		</section>
+		<section class="aui-content-padded">
+			<div class="aui-card-list">
+				<div class="card-left">
+					<p class="class-name">
+						软件工程当前不在上课时间哦
+					</p>
+					<p class="class-sign">
+						授课名称
+					</p>
+				</div>
+				<div class="card-right">
+					<p class="class-name">
+						30
+					</p>
+					<p class="class-sign">
+						题目总数
+					</p>
+				</div>
+			</div>
+		</section>
+		<section class="aui-content-padded">
+			<div class="aui-card-list">
+				<div class="card-left">
+					<p class="class-name">
+						软件工程当前不在上课时间哦
+					</p>
+					<p class="class-sign">
+						授课名称
+					</p>
+				</div>
+				<div class="card-right">
+					<p class="class-name">
+						30
+					</p>
+					<p class="class-sign">
+						题目总数
+					</p>
+				</div>
+			</div>
+		</section>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+		};
+		//查看备选题
+		function alternative() {
+			$BaseUI.openWin("quizzesQuestion", "./alternative-question.html");
+		}
+
+		//返回按钮
+		function fnClo() {
+			$BaseUI.closeWin();
+		}
+	</script>
+</html>

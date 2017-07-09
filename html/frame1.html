@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>授课列表</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <script type="text/javascript" src="../script/aui/aui-list-swipe.js"></script>
+        <script type="text/javascript" src="../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../script/api.js"></script>
+        <script src="../script/aui/aui-pull-refresh.js"></script>
+        <script type="text/javascript" src="../script/utils/doT.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/aui-pull-refresh.css" />
+        <script type="text/javascript" src="../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../script/aui/aui-dialog.js" ></script>
+        <script type="text/javascript" src="../script/utils/prefsUtils.js"></script>
+        <style type="text/css">
+            .aui-list-item-inner.aui-swipe-handle {
+                overflow-x: hidden;
+                position: relative;
+                z-index: 1;
+                background-color: #ffffff;
+            }
+            .aui-swipe-btn {
+                position: absolute;
+                right: 0;
+                z-index: 0;
+                height: 100%;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-box-flex: 1;
+                -webkit-box-pack: justify;
+                -webkit-justify-content: space-between;
+                justify-content: space-between;
+                -webkit-box-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+            }
+            .aui-swipe-btn .aui-btn {
+                border-radius: 0;
+                height: 100%;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-box-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+            }
+            .donghua {
+                -webkit-transition-duration: 300ms;
+                transition-duration: 300ms;
+            }
+            .div {
+                clear: both;
+                display: block;
+                float: left;
+            }
+            #create{
+                font-size:15px;
+            }
+            .aui-title{
+              font-size: 16px;
+            }
+            .aui-bar a:link {color: #fff} /* 未访问的链接 */
+            .aui-bar a:visited {color: #fff} /* 已访问的链接 */
+            .aui-bar a:hover {color: #fff} /* 当有鼠标悬停在链接上 */
+            .aui-bar a:active {color: #fff} /* 被选择的链接 */
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <div class="aui-title">
+                我的授课
+            </div>
+            <a class="aui-pull-right aui-btn" id="create">新增 </a>
+        </header>
+        <div class="aui-content aui-margin-b-15 aui-refresh-content">
+            <ul class="aui-list" id="list"></ul>
+        </div>
+    </body>
+    <script id="courseTemplate" type="text/template">
+        {{~ it:data }}
+        <li class="aui-list-item" onclick="openDetail('{{=data.teachingId}}')">
+        <div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+        <div class="div">
+        <div class="aui-list-item-title">
+        {{=data.teachingName}}
+        </div>
+        <div class="aui-list-item-text">
+        {{ for(var prop in data.classes) { }}
+        [{{=data.classes[prop].className}}]
+        {{ } }}
+        </div>
+        </div>
+        </div>
+        <div class="aui-swipe-btn">
+        <div class="aui-btn aui-btn-info" onclick="edit('{{=data.teachingId}}')">
+        编辑
+        </div>
+        <div class="aui-btn aui-btn-danger">
+        删除
+        </div>
+        </div>
+        </li>
+        {{~}}
+    </script>
+    <script type="text/javascript">
+        var swipe = new auiListSwipe(function(ret) {
+        });
+        var courseDot = doT.template($('#courseTemplate').html());
+        var termId = null;
+        apiready = function() {
+            initBroadCast();
+            var cTerm = $api.strToJson(($PrefsUtils.getPref('defultTerm')));
+            if (null != cTerm) {
+                termId = cTerm.termId;
+            }
+            getTeachingList();
+        };
+        /**
+         *获取授课列表
+         */
+        function getTeachingList(){
+            var httpParams = {};
+            httpParams.termId = termId;
+            var configParams = {};
+            configParams.listBody = $('#list');
+            //列表标签
+            configParams.dotBody = courseDot;
+            configParams.hintPbody = $('.aui-content');
+            configParams.loadMore = true;
+            configParams.pull2Refresh = true;
+            configParams.emptyImg = '../image/zanwushuju.png';
+            configParams.errorImg = '../image/zanwushuju.png';
+            $httpUtils.initGetList("teacher/v1/getTeachingList", httpParams, configParams);
+        }
+
+        /**
+         *初始化授课修改事件
+         */
+        function initBroadCast() {
+            api.addEventListener({
+                name : 'teachingChanged'
+            }, function(ret, err) {
+                getTeachingList();
+            });
+        }
+
+        $api.addEvt($api.byId('create'), 'click', function() {
+            $BaseUI.openWin('teaching-edit', './teaching/teaching-edit.html');
+        });
+
+        function edit(courseId){
+            $BaseUI.openWin('teaching-edit', './teaching/teaching-edit.html',{courseId:courseId});
+            event.stopPropagation();
+        }
+
+        function openDetail(courseId) {
+            $BaseUI.openWin('teaching-detail', './teaching/teaching-detail.html',{courseId:courseId});
+        }
+    </script>
+</html>

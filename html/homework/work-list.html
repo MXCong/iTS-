@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>作业列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css">
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-tab.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="header">
+			<a class="aui-pull-left aui-btn" id="back"><span class="aui-iconfont aui-icon-left"></span>返回</a>
+			<div class="aui-title" id="filter">
+				全部授课<span class="aui-iconfont aui-icon-top ml-5" id="titleArror"></span>
+			</div>
+			<a class="aui-pull-right aui-btn" id="edit"> 新增 </a>
+		</header>
+		<div class="aui-bar aui-bar-btn" id="tab" style="width:80%;margin-top:10px;">
+			<div class="aui-bar-btn-item aui-active">
+				已发布
+			</div>
+			<div class="aui-bar-btn-item">
+				待发布
+			</div>
+			<div class="aui-bar-btn-item">
+				已到期
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var frames = new Array();
+		apiready = function() {
+			api.parseTapmode();
+			funIniGroup();
+		}
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('edit'), 'click', function() {
+			$BaseUI.openWin('work-edit', './work-edit.html');
+		});
+		var bar = document.querySelectorAll(".aui-bar-btn");
+		if (bar) {
+			for (var i = 0; i < bar.length; i++) {
+				var d = bar[i];
+				var tab = new auiTab({
+					element : bar[i],
+					repeatClick : false
+				}, function(ret) {
+					api.setFrameGroupIndex({
+						name : 'work',
+						index : ret.index - 1
+					});
+				});
+			}
+		}
+		function funIniGroup() {
+			frames.push({
+				name : 'work-sended',
+				url : './work-sended.html',
+				bgColor : 'rgba(0,0,0,.2)',
+				bounces : false
+			});
+			frames.push({
+				name : 'work-unsend',
+				url : './work-unsend.html',
+				bgColor : 'rgba(0,0,0,.2)',
+				bounces : false
+			});
+			frames.push({
+				name : 'work-expire',
+				url : './work-expire.html',
+				bgColor : 'rgba(0,0,0,.2)',
+				bounces : false
+			});
+			api.openFrameGroup({
+				name : 'work',
+				scrollEnabled : false,
+				preload : 3,
+				rect : {
+					x : 0,
+					y : $api.byId('header').offsetHeight + 15 + $api.byId('tab').offsetHeight,
+					w : api.winWidth,
+					h : api.winHeight - $api.byId('header').offsetHeight - 15 - $api.byId('tab').offsetHeight
+				},
+				index : 0,
+				frames : frames
+			}, function(ret, err) {
+			});
+		}
+
+
+		$api.addEvt($api.byId('filter'), 'click', function() {
+			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+			$api.addCls($api.byId('titleArror'), 'aui-icon-down');
+			$BaseUI.actionSheet("请选择授课", ['全部授课', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)'], '取消', function(ret) {
+				$api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+				$api.addCls($api.byId('titleArror'), 'aui-icon-top');
+			});
+		});
+	</script>
+</html>

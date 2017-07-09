@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui-slide.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/aui/aui-slide.js"></script>
+		<script src="../../script/api.js"></script>
+		<script src="../../script/aui/aui-pull-refresh.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" onclick="fnClo();"><span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				系统通知
+			</div>
+		</header>
+		<div class="aui-content aui-margin-b-15" style="margin-top: 5px;">
+			<ul class="aui-list aui-media-list">
+				<li class="aui-list-item">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media">
+							<img src="../../image/icon.png" class="aui-img-round aui-list-img-sm">
+						</div>
+						<div class="aui-list-item-inner">
+							<div class="aui-list-item-text">
+								<div class="aui-list-item-title">
+									通知发送提醒
+								</div>
+							</div>
+							<div class="aui-list-item-text">
+								2017-01-12 19:50
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				<img src="../../image/icon.png" style="width:1.5rem" class="aui-img-round" />
+				<span class="aui-margin-l-5">“关于劳动节期间的停水通知...”</span>
+			</div>
+		</div>
+		<div class="aui-card-list-footer aui-text-center">
+			<span class="aui-text-info">查看通知详情</span>
+		</div>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+		};
+		//返回按钮
+		function fnClo() {
+			$BaseUI.closeWin();
+		}
+	</script>
+</html>

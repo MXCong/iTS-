@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>个人信息展示</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/homework.css">
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+	</head>
+	<style>
+		.aui-content .aui-list.aui-list-in .aui-list-item{
+			margin-right: 0.75rem;
+			padding-left: 0.85rem;
+		}
+		.aui-content .aui-list .aui-list-item-inner{
+			padding-right: 0rem;
+		}
+		.aui-content .aui-list.aui-list-in .aui-list-item:last-child{
+			padding-left: 0.1rem;
+		}
+		.aui-list-item-arrow:before{
+			right: 0.1rem;
+		}
+		.aui-list-item .mr-75{
+			padding-right: 0.75rem;
+		}
+	</style>
+	<body>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							头像
+						</div>
+						<div class="aui-list-item-right">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img id="icon" src="../../image/icon.png" class="aui-img-round" >
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							姓名
+						</div>
+						<div class="aui-list-item-right" id="name"></div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							教工号
+						</div>
+						<div class="aui-list-item-right" id="teacherNo"></div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							性别
+						</div>
+						<div class="aui-list-item-right" id="sex">
+							男
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							学校
+						</div>
+						<div class="aui-list-item-right" id="schoolName"></div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							院系
+						</div>
+						<div class="aui-list-item-right" id="department"></div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							职称
+						</div>
+						<div class="aui-list-item-right" id="title"></div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							职务
+						</div>
+						<div class="aui-list-item-right" id="post"></div>
+					</div>
+				</li>
+				<li class="aui-list-item" id="email">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							邮箱
+						</div>
+						<div id="email" class="aui-list-item-right"></div>
+					</div>
+				</li>
+				<li class="aui-list-item" id="phone">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							电话
+						</div>
+						<div id="phone" class="aui-list-item-right"></div>
+					</div>
+				</li>
+				<li class="aui-list-item" id="im">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							IM
+						</div>
+						<div id="im" class="aui-list-item-right"></div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+			addListener();
+			getUserInfo();
+		};
+		//监听广播
+		function addListener() {
+			api.addEventListener({
+				name : 'userInfoEdit'
+			}, function(ret, err) {
+				getUserInfo();
+			});
+		}
+
+
+		$api.addEvt($api.byId('edit'), 'click', function() {
+			$BaseUI.openWin('my-info-edit', './my-info-edit.html');
+		});
+		$api.addEvt($api.byId('email'), 'click', function() {
+			$BaseUI.openWin('email', './email.html');
+		});
+		$api.addEvt($api.byId('phone'), 'click', function() {
+			$BaseUI.openWin('phone', './phone.html');
+		});
+		$api.addEvt($api.byId('im'), 'click', function() {
+			$BaseUI.openWin('im', './im.html');
+		});
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		//获取个人信息
+		function getUserInfo() {
+			$BaseUI.showPrgDlg();
+			$httpUtils.post('teacher/v1/personInfo', null, function(ret) {
+				if (ret) {
+					$BaseUI.hidePrgDlg();
+					$api.text($api.byId('name'), ret.name);
+					$api.attr($api.byId('icon'), 'src', ret.picture);
+					$api.text($api.byId('teacherNo'), ret.teacherNo);
+					$api.text($api.byId('schoolName'), ret.schoolName);
+					$api.text($api.byId('department'), ret.department);
+					$api.text($api.byId('schoolName'), ret.schoolName);
+					$api.text($api.byId('post'), ret.post);
+					$api.text($api.byId('title'), ret.zc);
+				}
+				$BaseUI.hidePrgDlg();
+			}, function(msg) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : msg
+				});
+			});
+		}
+	</script>
+</html>

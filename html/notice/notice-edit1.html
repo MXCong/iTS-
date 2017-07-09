@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>编辑通知</title>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+        <style>
+            .label {
+                padding: 10px;
+            }
+            .exit {
+                width: auto;
+                height: 70px;
+                margin: 20px;
+            }
+            .score-area {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .content {
+                margin-top: 5px;
+            }
+            .icon {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                创建通知
+            </div>
+            <a class="aui-pull-right aui-btn" id="edit"> 创建 </a>
+        </header>
+        <div class="content aui-content aui-margin-b-15">
+            <ul class="aui-list aui-media-list">
+                <li class="aui-list-item aui-list-item-middle nbgimg" onclick="teachingSelect();">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    目标授课
+                                </div>
+                                <div class="aui-list-item-right" id="teachingName">
+                                    点击选择目标授课
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                目标班级
+                            </div>
+                            <div class="aui-list-item-text">
+                                <div class="score-area" id="classList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-input">
+                            <input type="text" id="title" maxlength="80" placeholder="请输入通知标题">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-input">
+                            <textarea id="content" placeholder="请输入通知内容" maxlength="200" onkeyup="contentSizeChanged(this);"></textarea>
+                        </div>
+                        <section class="aui-grid aui-margin-b-15">
+                            <div class="aui-row" id="fileList"></div>
+                        </section>
+                        <div class="aui-info-div">
+                            <div class="aui-info-item">
+                                <img src="../../image/img.png" id="image" style="width:1rem" class="aui-img" />
+                                <img src="../../image/file.png" id="file" style="width:1rem; margin-left: 0.8rem;" class="aui-img" />
+                            </div>
+                            <div class="aui-info-item" id="textNumber">
+                                0/200
+                            </div>
+                        </div>
+                </li>
+                <li class="aui-list-item aui-list-item-middle top-5 nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title ">
+                                    发布时间
+                                </div>
+                                <input class="aui-list-item-right"  placeholder="请选择出生日期"  type="datetime-local" id="publishTime" style="
+                                line-height: 2.2rem;text-align: right">
+                                </input>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </body>
+    <script id="fileTemplate" type="text/template">
+        {{~ it:data }}
+        {{? data.fileId }}
+        <div class="aui-col-xs-2">
+        <div class="aui-badge" onclick="delFile(this,'{{=data.fileId}}');">
+        X
+        </div>
+        <img class="icon remoteFile" fileId={{=data.fileId}} src={{=data.filePath}} onerror="this.src='../../image/scwj.jpg'"></img>
+        <div class="aui-grid-label">
+        {{=data.fileName}}
+        </div>
+        </div>
+        {{??}}
+        <div class="aui-col-xs-2">
+        <div class="aui-badge" onclick="delFile(this,false);">
+        X
+        </div>
+        <img class="icon localFile"  filePath={{=data.filePath}} src={{=data.filePath}} onerror="this.src='../../image/scwj.jpg'"></img>
+        <div class="aui-grid-label">
+        {{=data.fileName}}
+        </div>
+        </div>
+        {{?}}
+        {{~}}
+    </script>
+    <script type="text/javascript">
+        var filedot = doT.template($('#fileTemplate').html());
+        var delArray = new Array();
+        var noticeId = null;
+        apiready = function() {
+            noticeId = api.pageParam.noticeId;
+            if (noticeId) {
+                getNoticeDetail(noticeId);
+            }
+            initBroadCast();
+        };
+        /**
+         *获取通知详情
+         */
+        function getNoticeDetail(id) {
+            $BaseUI.showPrgDlg();
+            var params = {};
+            params.noticeId = noticeId;
+            $httpUtils.post('teacher/v1/noticeDetail', params, function(ret) {
+                $BaseUI.hidePrgDlg();
+                if (ret) {
+                    $('#teachingName').html(ret.teachingName);
+                    $('#teachingName').attr('teachingId', ret.teachingId);
+                    $('#title').val(ret.title);
+                    $('#content').val(ret.content);
+                    if (ret.classes) {
+                        var classStr = "";
+                        for (var i = 0; i < ret.classes.length; i++) {
+                            classStr += "[" + ret.classes[i].className + "]";
+                        }
+                        $('#classList').html(classStr);
+                    }
+                    $('#publishTime').val(getTimeByTimeStamp(ret.publishTime));
+                    if (ret.files && ret.files.length > 0) {
+                        $('#fileList').html(filedot(ret.files));
+                    }
+                    var height = $(".icon").width();
+                    $(".icon").css("height", height);
+                } else {
+                    $BaseUI.closeWin();
+                }
+            }, function(msg) {
+                $BaseUI.hidePrgDlg();
+                if (msg) {
+                    alert(msg);
+                }
+                $BaseUI.closeWin();
+            });
+        }
+        /**
+         *通过时间戳获取日期 
+         */
+        function getTimeByTimeStamp(timeStamp) {
+            var now = new Date();
+            now.setTime(timeStamp * 1000);
+            return str = now.getFullYear() + "-" + fix((now.getMonth() + 1), 2) + "-" + fix(now.getDate(), 2) + "T" + fix(now.getHours(), 2) + ":" + fix(now.getMinutes(), 2);
+        }
+
+        function fix(num, length) {
+            return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
+        }
+
+        /**
+         *初始化授课选择广播
+         */
+        function initBroadCast() {
+            api.addEventListener({
+                name : 'teachingSelect'
+            }, function(ret, err) {
+                console.log($api.jsonToStr(ret));
+                if (ret) {
+                    $('#teachingName').html(ret.value.teachingName);
+                    $('#teachingName').attr('teachingId', ret.value.teachingId);
+                    $('#classList').html(ret.value.className);
+                }
+            });
+        }
+
+        /**
+         *内容文字改变
+         */
+        function contentSizeChanged(tag) {
+            console.log('congtent.size:' + $(tag).val().length);
+            $(tag).val($(tag).val().substring(0, 200));
+            $('#textNumber').html($(tag).val().length + '/200');
+        }
+
+
+        $api.addEvt($api.byId('edit'), 'click', function() {
+            checkParams();
+        });
+        /**
+         *检查通知参数
+         */
+        function checkParams() {
+            try {
+                if (!$('#teachingName').attr('teachingId')) {
+                    throw "请选择目标授课!";
+                }
+                if (!$('#title').val()) {
+                    throw "请输入通知标题!";
+                }
+                if (!$('#content').val()) {
+                    throw "请输入通知内容!";
+                }
+                if (!$('#publishTime').val()) {
+                    throw "请选择发布时间!";
+                }
+                doSave();
+            } catch(e) {
+                api.toast({
+                    msg : e
+                });
+            }
+        }
+
+        /**
+         *创建通知
+         */
+        function doSave() {
+            $BaseUI.showPrgDlg();
+            var files = new Array();
+            var params = {};
+            params.noticeId = noticeId;
+            params.content = $('#content').val();
+            params.teachingId = $('#teachingName').attr('teachingId');
+            params.deleted = delArray;
+            params.title = $('#title').val();
+            // 获取某个时间格式的时间戳
+            var stringTime = $('#publishTime').val().replace('T', ' ');
+            var timestamp = Date.parse(new Date(stringTime));
+            timestamp = timestamp / 1000;
+            console.log(stringTime + "的时间戳为：" + timestamp);
+            params.publishTime = timestamp;
+            $('.localFile').each(function(i) {
+                files.push($(this).attr('filePath'));
+            });
+            params.files = {
+                file : files
+            };
+            $httpUtils.post('teacher/v1/andOrUpdateNotice', params, function(ret) {
+                $BaseUI.hidePrgDlg();
+                if (ret) {
+                    api.toast({
+                        msg : ret
+                    });
+                }
+                $BaseUI.closeWin();
+            }, function(msg) {
+                $BaseUI.hidePrgDlg();
+                if (msg) {
+                    api.toast({
+                        msg : msg
+                    });
+                }
+            });
+        }
+
+
+        $api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+        $api.addEvt($api.byId('image'), 'click', function() {
+            $BaseUI.actionSheet('请选择方式', ['相机', '图库'], '取消', function(ret) {
+                try {
+                    var sourceType = null;
+                    switch(ret) {
+                        case 1:
+                            sourceType = 'camera';
+                            break;
+                        case 2:
+                            sourceType = 'library';
+                            break;
+                        default:
+                            throw null;
+                            break;
+                    }
+                    api.getPicture({
+                        sourceType : sourceType,
+                        encodingType : 'jpg',
+                        mediaValue : 'pic',
+                        destinationType : 'url',
+                        allowEdit : true,
+                        quality : 50,
+                        targetWidth : 1000,
+                        targetHeight : 1000,
+                        saveToPhotoAlbum : false
+                    }, function(ret, err) {
+                        if (ret.data) {
+                            add2List(ret.data);
+                        }
+                    });
+                } catch(e) {
+                }
+            });
+        });
+        /**
+         *添加文件到列表
+         */
+        function add2List(path) {
+            var item = {};
+            item.filePath = path;
+            item.fileName = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $('#fileList').prepend(filedot(new Array(item)));
+            var height = $(".icon").width();
+            $(".icon").css("height", height);
+        }
+
+        /**
+         *删除附件
+         */
+        function delFile(tag, fileId) {
+            if (fileId) {
+                delArray.push({
+                    fileId : fileId
+                });
+            }
+            $api.remove(tag.parentNode);
+            event.stopPropagation();
+        };
+        $api.addEvt($api.byId('file'), 'click', function() {
+            var fileBrowser = api.require('fileBrowser');
+            fileBrowser.open(function(ret, err) {
+                if (ret) {
+                    fileBrowser.close();
+                    add2List(ret.url);
+                }
+            });
+            event.stopPropagation();
+        });
+        /**
+         *选择目标课程
+         */
+        function teachingSelect() {
+            $BaseUI.openWin('teaching-select', './teaching-select.html');
+        }
+    </script>
+</html>

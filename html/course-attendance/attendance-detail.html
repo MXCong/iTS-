@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/custom.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script src="../../script/api.js"></script>
+		<script src="../../script/aui/aui-tab.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"><span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				考勤详情
+			</div>
+		</header>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+			$BaseUI.openFrame('attendance-detail-frame', 'attendance-detail-frame.html');
+		};
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		//初始化按钮选择器
+		function initBar() {
+			var bar = document.querySelectorAll(".aui-bar-btn");
+			if (bar) {
+				for (var i = 0; i < bar.length; i++) {
+					var d = bar[i];
+					var tab = new auiTab({
+						element : bar[i],
+						repeatClick : true
+					}, function(ret) {
+						if (ret.index == 1) {
+							//alert("出勤列表");
+						}
+						if (ret.index == 2) {
+							//alert("缺勤列表");
+						}
+					});
+				}
+			}
+		}
+	</script>
+</html>

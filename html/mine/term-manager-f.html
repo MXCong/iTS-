@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>学期管理</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-list-swipe.js"></script>
+		<style>
+			.aui-list-item-inner.aui-swipe-handle {
+				overflow-x: hidden;
+				position: relative;
+				z-index: 1;
+				background-color: #ffffff;
+			}
+			.aui-swipe-btn {
+				position: absolute;
+				right: 0;
+				z-index: 0;
+				height: 100%;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-flex: 1;
+				-webkit-box-pack: justify;
+				-webkit-justify-content: space-between;
+				justify-content: space-between;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			.aui-swipe-btn .aui-btn {
+				border-radius: 0;
+				height: 100%;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			.donghua {
+				-webkit-transition-duration: 300ms;
+				transition-duration: 300ms;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list" id="DIV">
+			<script id="Template" type="text/template">
+			{{~ it:data}}
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" onclick="termDetail('{{= data.termId}}');">
+						<div class="aui-list-item-title">
+							{{= data.termName}}
+						</div>
+						{{? data.isDefult==1}}
+						<div class="aui-list-item-right">
+							<div class="aui-badge" style="position:relative;top:0; left:0">
+								默认
+							</div>
+						</div>
+						{{?}}
+					</div>
+					<div class="aui-swipe-btn">
+						<div class="aui-btn aui-btn-info" onclick="editTerm('{{= data.termId}}')">
+							编辑
+						</div>
+						<div class="aui-btn aui-btn-danger" onclick="delTerm('{{= data.termId}}')">
+							删除
+						</div>
+					</div>
+				</li>
+			{{~}}
+			</script>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var dot = doT.template($('#Template').html());
+		apiready = function() {
+			eventListener();
+			getTermList();
+		};
+		var swipe = new auiListSwipe(function(ret) {
+		});
+		//监听事件
+		function eventListener(){
+			api.addEventListener({
+	            name:'addTerm'
+            },function(ret,err){
+            	getTermList();
+            });
+            api.addEventListener({
+	            name:'termEdit'
+            },function(ret,err){
+            	getTermList();
+            });
+		}
+		//获取学期列表
+		function getTermList() {
+			$BaseUI.showPrgDlg("及时当勉励，岁月不待人..");
+			$httpUtils.post("teacher/v1/getTermList", null, function(ret) {
+				$BaseUI.hidePrgDlg();
+				$BaseUI.hideHint();
+				$('#DIV').html(dot(ret));
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				$BaseUI.showHint();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//查看学期详情
+		function termDetail(termId) {
+			$BaseUI.openWin('term-detail', './term-detail.html',{"termId":termId});
+		}
+
+		//删除学期
+		function delTerm(termId){
+			var par = {};
+			par.termId = termId;
+            $BaseUI.confirm('确认删除？','删除后，学期下的所有内容将同步删除...？','取消','确定',function(){
+            	return;
+            },function(){
+            	$BaseUI.showPrgDlg();
+            	$httpUtils.post('teacher/v1/delTerm',par,function(ret){
+            		$BaseUI.hidePrgDlg();
+            		getTermList();
+            	},function(err){
+            		api.toast({
+                        msg : err
+                    });
+            		$BaseUI.hidePrgDlg();
+            	});
+            });
+		}
+		
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
+</html>

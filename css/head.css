@@ -1,0 +1,26 @@
+/*header 样式*/
+
+.aui-bar a:link {
+	color: #fff
+}/* 未访问的链接 */
+.aui-bar a:visited {
+	color: #fff
+}/* 已访问的链接 */
+.aui-bar a:hover {
+	color: #fff
+}/* 当有鼠标悬停在链接上 */
+.aui-bar a:active {
+	color: #fff
+}/* 被选择的链接 */
+.ml-5 {
+	margin-left: 5px;
+}
+.aui-bar-nav .aui-title {
+	font-size: 16px;
+}
+.aui-bar-nav .aui-pull-left {
+	font-size: 15px;
+}
+.aui-bar-nav .aui-pull-right {
+	font-size: 15px;
+}

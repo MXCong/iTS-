@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>授课选择</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-list-swipe.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+		<script src="../../script/aui/aui-pull-refresh.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				选择授课
+			</div>
+		</header>
+		<div class="aui-content aui-margin-b-15 aui-refresh-content">
+			<ul class="aui-list aui-media-list" id="list"></ul>
+		</div>
+	</body>
+	<script id="courseTemplate" type="text/template">
+		{{~ it:data }}
+		<li class="aui-list-item aui-list-item-middle" onclick="select(this,'{{=data.teachingId}}','{{=data.teachingName}}')">
+		<div class="aui-media-list-item-inner">
+		<div class="aui-list-item-inner aui-list-item-arrow">
+		<div class="aui-list-item-text">
+		<div class="aui-list-item-title aui-font-size-14"> {{=data.teachingName}}</div>
+		</div>
+		<div class="aui-list-item-text className">
+		{{ for(var prop in data.classes) { }}
+		[{{=data.classes[prop].className}}]
+		{{ } }}
+		</div>
+		</div>
+		</div>
+		</li>
+		{{~}}
+	</script>
+	<script type="text/javascript">
+		var swipe = new auiListSwipe(function(ret) {
+		});
+		var courseDot = doT.template($('#courseTemplate').html());
+		var termId = null;
+		apiready = function() {
+			initBroadCast();
+			var cTerm = $api.strToJson(($PrefsUtils.getPref('defultTerm')));
+			if (null != cTerm) {
+				termId = cTerm.termId;
+			}
+			getTeachingList();
+		};
+		/**
+		 *获取授课列表
+		 */
+		function getTeachingList() {
+			var httpParams = {};
+			httpParams.termId = termId;
+			var configParams = {};
+			configParams.listBody = $('#list');
+			//列表标签
+			configParams.dotBody = courseDot;
+			configParams.hintPbody = $('.aui-content');
+			configParams.loadMore = true;
+			configParams.pull2Refresh = true;
+			configParams.emptyImg = '../image/zanwushuju.png';
+			configParams.errorImg = '../image/zanwushuju.png';
+			$httpUtils.initGetList("teacher/v1/getTeachingList", httpParams, configParams);
+		}
+
+		/**
+		 *初始化授课修改事件
+		 */
+		function initBroadCast() {
+			api.addEventListener({
+				name : 'teachingChanged'
+			}, function(ret, err) {
+				getTeachingList();
+			});
+		}
+
+
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		/**
+		 *选择授课
+		 */
+		function select(tag, tId, tName) {
+			var params = {};
+			params.teachingId = tId;
+			params.teachingName = tName;
+			params.className = $(tag).find('.className').html().trim();
+			api.sendEvent({
+				name : 'teachingSelect',
+				extra : params
+			});
+			$BaseUI.closeWin();
+		}
+	</script>
+</html>

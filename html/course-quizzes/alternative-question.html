@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+		<style>
+			.aui-grid .aui-iconfont {
+				font-size: 1.0rem;
+			}
+			.aui-grid {
+				position: fixed;
+				bottom: -2px;
+				z-index: 999999;
+				border-top: 1px solid #eee;
+				box-shadow: 0 0 8px #e1e1e1;
+			}
+			.aui-grid [class*=aui-col-] {
+				padding: 0.3rem 0;
+				color: #666;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="aui-header">
+			<a class="aui-pull-left aui-btn" onclick="fnClo();"><span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title" id="filter">
+				软件工程<span class="aui-iconfont aui-icon-top" id="titleArror"></span>
+			</div>
+			<a class="aui-pull-right aui-btn" onclick="showPoint();">题库</a>
+		</header>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+			api.parseTapmode();
+			var header = $api.byId('aui-header');
+			//$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			var body_h = $api.offset($api.dom('body')).h;
+			api.openFrame({
+				name : 'alternative-question-frame',
+				url : 'alternative-question-frame.html',
+				bounces : false,
+				rect : {
+					x : 0,
+					y : headerPos.h,
+					w : 'auto',
+					h : 'auto'
+				}
+			})
+			api.parseTapmode();
+		};
+		$api.addEvt($api.byId('filter'), 'click', function() {
+			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+			$api.addCls($api.byId('titleArror'), 'aui-icon-down');
+			$BaseUI.actionSheet("请选择分类", ['软件工程', '编译原理', '数据结构'], '取消', function(ret) {
+				$api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+				$api.addCls($api.byId('titleArror'), 'aui-icon-top');
+			});
+		});
+		//问题详情
+		function showDetail() {
+			$BaseUI.openWin("questionDetail", "./question-detail.html");
+		}
+
+		//题库
+		function showPoint() {
+			$BaseUI.openWin("knowledgePoint", "./knowledge-point-list.html");
+		}
+
+		//返回按钮
+		function fnClo() {
+			$BaseUI.closeWin();
+		}
+	</script>
+</html>

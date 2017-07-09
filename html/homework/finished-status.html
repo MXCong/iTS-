@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>作业完成状态</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/head.css">
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-tab.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <style>
+            
+			
+        </style>
+    </head>
+    <body>
+        <header id="header" class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                作业完成情况
+            </div>
+        </header>
+        <div id="tab" class="aui-bar aui-bar-btn" style="width:80%;margin-top:10px;">
+            <div class="aui-bar-btn-item aui-active">
+                已完成
+            </div>
+            <div class="aui-bar-btn-item">
+                未完成
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var frames = new Array();
+        apiready = function() {
+            api.parseTapmode();
+            funIniGroup();
+        }
+        var bar = document.querySelectorAll(".aui-bar-btn");
+        if (bar) {
+            for (var i = 0; i < bar.length; i++) {
+                var d = bar[i];
+                var tab = new auiTab({
+                    element : bar[i],
+                    repeatClick : false
+                }, function(ret) {
+                    console.log('ret:'+$api.jsonToStr(ret));
+                    api.setFrameGroupIndex({
+                        name : 'finishGroup',
+                        index : ret.index - 1
+                    });
+                });
+            }
+        }
+        function funIniGroup() {
+            frames.push({
+                name : 'finished',
+                url : './finished.html',
+                bgColor : 'rgba(0,0,0,.2)',
+                bounces : false
+            });
+            frames.push({
+                name : 'unfinished',
+                url : './unfinished.html',
+                bgColor : 'rgba(0,0,0,.2)',
+                bounces : false
+            });
+            api.openFrameGroup({
+                name : 'finishGroup',
+                scrollEnabled : false,
+                preload : 3,
+                rect : {
+                    x : 0,
+                    y : $api.byId('header').offsetHeight + 15 + $api.byId('tab').offsetHeight,
+                    w : api.winWidth,
+                    h : api.winHeight - $api.byId('header').offsetHeight - 15 - $api.byId('tab').offsetHeight
+                },
+                index : 0,
+                frames : frames
+            }, function(ret, err) {
+            });
+        }
+        $api.addEvt($api.byId('back'), 'click', function(){
+            $BaseUI.closeWin();
+        });
+    </script>
+</html>

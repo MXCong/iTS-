@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/homework.css">
+		<script src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-popup-new.js" ></script>
+		<script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+		<script src="../../script/api.js"></script>
+	</head>
+	<style>
+	body{
+		background:#f5f5f5;
+	}
+	.aui-grid{
+		background: none;
+		border-bottom:1px solid #f5f5f5;
+	}
+	.aui-row{
+		background: #fff;
+	}
+
+	</style>
+	<body>
+		<div class="aui-searchbar" id="search">
+			<div class="aui-searchbar-input aui-border-radius" tapmode>
+				<i class="aui-iconfont aui-icon-search"></i>
+				<form action="javascript:search();">
+					<input type="search" placeholder="请输入搜索内容" id="search-input">
+				</form>
+			</div>
+			<div class="aui-searchbar-cancel" tapmod>
+				取消
+			</div>
+		</div>
+		<section class="aui-grid">
+			<div class="aui-row">
+				<div class="aui-col-xs-3">
+					学号
+				</div>
+				<div class="aui-col-xs-3">
+					姓名
+				</div>
+				<div class="aui-col-xs-3">
+					平时成绩
+				</div>
+				<div class="aui-col-xs-3">
+					测验成绩
+				</div>
+			</div>
+		</section>
+		<section class="aui-grid mt-5">
+			<div class="aui-row" tapmode onclick="openDialog('input')">
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						20131308083
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						张三
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						好
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						好
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="aui-grid">
+			<div class="aui-row" tapmode onclick="openDialog('input')">
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						20131308084
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						李四
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						——
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						好
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+	<script type="text/javascript">
+		var popup = new auiPopup();
+		var dialog = new auiDialog();
+		apiready = function() {
+			api.parseTapmode();
+		};
+		function showPopup(location) {
+			popup.init({
+				frameBounces : true, //当前页面是否弹动，（主要针对安卓端）
+				location : location, //位置，top(默认：顶部中间),top-left top-right,bottom,bottom-left,bottom-right
+				buttons : [{
+					text : '全部',
+					value : 'wx'//可选
+				}, {
+					text : '软件工程课(13级软件工程2班)',
+					value : 'wx-circle'
+				}, {
+					text : '软件工程课(13级软件工程2班)',
+					value : 'qq'
+				}, {
+					text : '软件工程课(13级软件工程2班)',
+					value : 'qq-qzone'
+				}, {
+					text : '软件工程课(13级软件工程2班)'
+				}],
+			}, function(ret) {
+				if (ret) {
+					//document.getElementById("button-index").textContent = ret.buttonIndex;
+					//document.getElementById("button-value").textContent = ret.buttonValue;
+				}
+			})
+		}
+
+		//学生加分弹窗
+		function openDialog(type) {
+			switch (type) {
+				case "input":
+					dialog.prompt({
+						title : "平时成绩",
+						text : '建议百分制',
+						type : 'number',
+						buttons : ['取消', '确定']
+					}, function(ret) {
+						if (ret.buttonIndex == 2) {
+							dialog.alert({
+								title : "提示",
+								msg : "您输入的内容是：" + ret.text,
+								buttons : ['确定']
+							});
+						}
+					})
+					break;
+				default:
+					break;
+			}
+		}
+
+		//返回按钮
+		function fnClo() {
+			$BaseUI.closeWin();
+		}
+	</script>
+</html>

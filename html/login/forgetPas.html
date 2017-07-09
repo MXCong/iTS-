@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>登录页面</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <style>
+            .exit {
+                width: auto;
+                height: 70px;
+                margin-left: 20px;
+                margin-right: 20px;
+                margin-top: 10px;
+            }
+            .content {
+                margin-top: 5px;
+            }
+            .label{
+                padding:5px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                找回密码
+            </div>
+        </header>
+        <div class="aui-content content aui-margin-b-15">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            手机号
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input type="tel" maxlength="11" placeholder="请输入您注册时的手机号" id="phone" onkeyup="value=value.replace(/[^\d{1,}\d{1,}|\d{1,}]/g,'')">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            验证码
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input id="code" maxlength="6" type="text" placeholder="请输入6位验证码" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+                        </div>
+                        <div class="aui-list-item-label">
+                            <div class="label aui-label aui-label-info" id="yzma" onclick="getVerifycode()">
+                                获取验证码
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            新密码
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input id="pwd" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="password" maxlength="20" placeholder="输入新密码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            确认密码
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input id="pwd2" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="password" maxlength="20" placeholder="重复您输入的密码">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="exit">
+                <div class="aui-btn aui-btn-info aui-btn-block" onclick="recovered()">
+                    重置密码
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var isPushCode = false;
+            var times = 60000;
+            var phone = /^((13\d)|(14[5,7])|(15[0,1,2,3,5,6,7,8,9])|(17[0,8,7])|(18\d))\d{8}$/;
+            /**
+             * 获取验证码
+             * @author lifei
+             */
+            function getVerifycode() {
+                if (isPushCode) {
+                    return;
+                }
+                if ($("#phone").val()) {
+                    var phone = /^((13\d)|(14[5,7])|(15[0,1,2,3,5,6,7,8,9])|(17[0,8,7])|(18\d))\d{8}$/;
+                    if (phone.test($('#phone').val())) {
+                        var params = {};
+                        params.imei = api.deviceId;
+                        params.appKey = '20161001_ITEACHER';
+                        params.mobile = $("#phone").val();
+                        params.type = 1;
+                        $BaseUI.showPrgDlg('请稍等...');
+                        $httpUtils.postNormal('v1/verifycode', params, function(data) {
+                            $BaseUI.hidePrgDlg();
+                            alert('已向您的手机发送验证码，请注意查看');
+                            var flag = setInterval(function() {
+                                if (times == 0) {
+                                    clearInterval(flag);
+                                    $("#yzma").val('获取验证码');
+                                    isPushCode = false;
+                                    $("#yzma").css("background-color", "#4cd964");
+                                    times = 60000;
+                                } else {
+                                    isPushCode = true;
+                                    times = times - 1000;
+                                    $("#yzma").css("background-color", "#ccc");
+                                    $("#yzma").val("等待  " + (times / 1000) + 'S');
+                                }
+                            }, 1000);
+                        }, function(msg) {
+                            $BaseUI.hidePrgDlg();
+                            api.toast({
+                                msg : msg
+                            });
+                        });
+                    } else {
+                        alert('请输入正确的手机号！');
+                    }
+                } else {
+                    alert('手机号不能为空！');
+                }
+            }
+
+            /**
+             * 重置密码操作
+             * @author lifei
+             */
+            function recovered() {
+                if (!$('#phone').val()) {
+                    alert("手机号不能为空！");
+                    return;
+                }
+                if (!$('#code').val()) {
+                    alert("验证码不能为空！");
+                    return;
+                }
+                if (!$('#pwd').val()) {
+                    alert("密码不能为空！");
+                    return;
+                }
+                if (!$('#pwd2').val()) {
+                    alert("确认密码不能为空！");
+                    return;
+                }
+                if (!phone.test($('#phone').val())) {
+                    alert("请输入正确的手机号！");
+                    return;
+                }
+                if ($('#pwd').val().length < 6) {
+                    alert("密码长度不能少于6位！");
+                    return;
+                }
+                if ($('#pwd').val() != $('#pwd2').val()) {
+                    alert("两次输入的密码不一致！");
+                    return;
+                }
+                var params = {};
+                params.account = $('#phone').val();
+                params.verifyCode = $('#code').val();
+                params.password = hex_md5($('#pwd').val());
+                $BaseUI.showPrgDlg('正在修改密码...');
+                $httpUtils.postNormal('v1/recovered', params, function(data) {
+                    $BaseUI.hidePrgDlg();
+                    api.alert({
+                        title : '提示',
+                        msg : '密码修改成功！'
+                    }, function(ret, err) {
+                        $BaseUI.openWin('login', 'login.html');
+                        $BaseUI.closeWin();
+                    });
+                }, function(msg) {
+                    $BaseUI.hidePrgDlg();
+                    api.toast({
+                        msg : msg
+                    });
+                });
+            }
+
+            $(function() {
+                $('#back').on('click', function() {
+                    $BaseUI.closeWin();
+                });
+            });
+        </script>
+    </body>
+</html>

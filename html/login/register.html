@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <title>注册页面</title>
+        <!-- 本页面框架来自 http://m.sui.taobao.org/ -->
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <style>
+            .exit {
+                width: auto;
+                height: 70px;
+                margin-left: 20px;
+                margin-right: 20px;
+                margin-top: 10px;
+            }
+            .content {
+                margin-top: 5px;
+            }
+            .label {
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                注册
+            </div>
+        </header>
+        <div class="aui-content content aui-margin-b-15">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            手机号
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input type="tel" maxlength="11" placeholder="请输入您注册时的手机号" id="phone" onkeyup="value=value.replace(/[^\d{1,}\d{1,}|\d{1,}]/g,'')">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            验证码
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input id="code" maxlength="6" type="text" placeholder="请输入6位验证码" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
+                        </div>
+                        <div class="aui-list-item-label">
+                            <div class="label aui-label aui-label-info" id="yzma" onclick="getVerifycode()">
+                                获取验证码
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            新密码
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input id="pwd" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="password" maxlength="20" placeholder="输入新密码">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            确认密码
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input id="pwd2" onkeyup="value=value.replace(/[\W]/g,'') " onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" type="password" maxlength="20" placeholder="重复您输入的密码">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="left-block" style="margin:1rem;">
+                <div class="checkBox" style=" width: 80%;">
+                    <input name="" class="aui-checkbox" id="rememberPass" type="checkbox">
+                    <label for="rememberPass">我已经同意 <a href="#">教师助手协议</a> 的协议</label>
+                </div>
+            </div>
+            <div class="exit">
+                <div class="aui-btn aui-btn-info aui-btn-block" onclick="register()">
+                    注册
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var isPushCode = false;
+            var times = 60000;
+            var phone = /^((13\d)|(14[5,7])|(15[0,1,2,3,5,6,7,8,9])|(17[0,8,7])|(18\d))\d{8}$/;
+            /**
+             * 注册操作
+             * @author lifei
+             */
+            function register() {
+                if (!$('#phone').val()) {
+                    alert("手机号不能为空！");
+                    return;
+                }
+                if (!$('#code').val()) {
+                    alert("验证码不能为空！");
+                    return;
+                }
+                if (!$('#pwd').val()) {
+                    alert("密码不能为空！");
+                    return;
+                }
+                if (!$('#pwd2').val()) {
+                    alert("确认密码不能为空！");
+                    return;
+                }
+                if (!phone.test($('#phone').val())) {
+                    alert("请输入正确的手机号！");
+                    return;
+                }
+                if ($('#pwd').val().length < 6) {
+                    alert("密码长度不能少于6位！");
+                    return;
+                }
+                if ($('#pwd').val() != $('#pwd2').val()) {
+                    alert("两次输入的密码不一致！");
+                    return;
+                }
+                if (!$('#rememberPass').prop("checked")) {
+                    alert("请先同意软件协议！")
+                    return;
+                }
+                var params = {};
+                params.account = $('#phone').val();
+                params.verifyCode = $('#code').val();
+                params.password = hex_md5($('#pwd').val());
+                params.userType = '01';
+                $BaseUI.showPrgDlg('正在注册...');
+                $httpUtils.postNormal('v1/register', params, function(data) {
+                    $BaseUI.hidePrgDlg();
+                    api.alert({
+                        title : '提示',
+                        msg : '注册成功！'
+                    }, function(ret, err) {
+                        $BaseUI.closeToWin('login', 'login.html');
+                    });
+                }, function(msg) {
+                    $BaseUI.hidePrgDlg();
+                    api.toast({
+                        msg : msg
+                    });
+                });
+            }
+
+            /**
+             * 获取注册验证码
+             * @author lifei
+             */
+            function getVerifycode() {
+                if (isPushCode) {
+                    return;
+                }
+                if ($("#phone").val()) {
+                    var phone = /^((13\d)|(14[5,7])|(15[0,1,2,3,5,6,7,8,9])|(17[0,8,7])|(18\d))\d{8}$/;
+                    if (phone.test($('#phone').val())) {
+                        var params = {};
+                        params.imei = api.deviceId;
+                        params.appKey = '20161001_ITEACHER';
+                        params.mobile = $("#phone").val();
+                        params.type = 0;
+                        $BaseUI.showPrgDlg('请稍等...');
+                        $httpUtils.postNormal('v1/verifycode', params, function(data) {
+                            $BaseUI.hidePrgDlg();
+                            alert('已向您的手机发送验证码，请注意查看');
+                            var flag = setInterval(function() {
+                                if (times == 0) {
+                                    clearInterval(flag);
+                                    $("#yzma").val('获取验证码');
+                                    isPushCode = false;
+                                    $("#yzma").css("background-color", "#4cd964");
+                                    times = 60000;
+                                } else {
+                                    isPushCode = true;
+                                    times = times - 1000;
+                                    $("#yzma").css("background-color", "#ccc");
+                                    $("#yzma").val("等待  " + (times / 1000) + 'S');
+                                }
+                            }, 1000);
+                        }, function(msg) {
+                            $BaseUI.hidePrgDlg();
+                            api.toast({
+                                msg : msg
+                            });
+                        });
+                    } else {
+                        alert('请输入正确的手机号！');
+                    }
+                } else {
+                    alert('手机号不能为空！');
+                }
+            }
+
+
+            $api.addEvt($api.byId('back'), 'click', function() {
+                $BaseUI.closeWin();
+            });
+        </script>
+    </body>
+</html>

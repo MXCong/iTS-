@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/aui-pull-refresh.css" />
+		<link rel="stylesheet" type="text/css" href="../css/aui-slide.css" />
+		<script type="text/javascript" src="../script/aui/aui-slide.js"></script>
+		<script src="../script/api.js"></script>
+		<script src="../script/aui/aui-pull-refresh.js"></script>
+		<script src="../script/utils/baseUI.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="../css/custom.css" />
+		
+	</head>
+	<body>
+		<section class="aui-refresh-content">
+			<div id="aui-slide3">
+				<div class="aui-slide-wrap" >
+					<div class="aui-slide-node bg-dark">
+						<img src="../image/api_1.png" />
+					</div>
+					<div class="aui-slide-node bg-dark">
+						<img src="../image/l1.png" />
+					</div>
+					<div class="aui-slide-node bg-dark">
+						<img src="../image/api_1.png" />
+					</div>
+				</div>
+				<div class="aui-slide-page-wrap">
+					<!--分页容器-->
+				</div>
+			</div>
+			<section class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-3" onclick="attendance();">
+						<i class="aui-iconfont aui-icon-home qiandao"></i>
+						<div class="aui-grid-label">
+							签到
+						</div>
+					</div>
+					<div class="aui-col-xs-3" onclick="quizzes();">
+						<i class="aui-iconfont aui-icon-gear ceyan"></i>
+						<div class="aui-grid-label">
+							测验
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="homework">
+						<i class="aui-iconfont aui-icon-map zuoye"></i>
+						<div class="aui-grid-label">
+							作业
+						</div>
+					</div>
+					<div class="aui-col-xs-3" onclick="score();">
+						<i class="aui-iconfont aui-icon-calendar chengji"></i>
+						<div class="aui-grid-label">
+							成绩
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="calendar">
+						<i class="aui-iconfont aui-icon-date rili"></i>
+						<div class="aui-grid-label">
+							日历
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="learningCondition">
+						<i class="aui-iconfont aui-icon-cart xueqing"></i>
+						<div class="aui-grid-label">
+							学情
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="takePictures">
+						<i class="aui-iconfont aui-icon-paper suishou"></i>
+						<div class="aui-grid-label">
+							随手拍
+						</div>
+					</div>
+					<div class="aui-col-xs-3" id="notice">
+						<i class="aui-iconfont aui-icon-video tongzhi"></i>
+						<div class="aui-grid-label">
+							通知
+						</div>
+					</div>
+				</div>
+			</section>
+			<div class="aui-content">
+				<ul class="aui-list aui-media-list">
+					<li class="aui-list-header">
+						下次课程
+					</li>
+					<li class="aui-list-item aui-list-item-middle">
+						<div class="aui-media-list-item-inner">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../image/icon.png" class="aui-img-round" >
+							</div>
+							<div class="aui-list-item-inner aui-list-item-arrow">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-14">
+										软件工程(2017级软件工程2班、2017级软件工程2班)
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									上课时间：04-09 09:00~12:00
+								</div>
+								<div class="aui-list-item-text">
+									上课地点：尚学楼302教室
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<ul class="aui-list aui-media-list" style="margin-bottom:1rem;">
+					<li class="aui-list-header">
+						近期作业
+					</li>
+					<li class="aui-list-item aui-list-item-middle">
+						<div class="aui-media-list-item-inner">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../image/icon.png" class="aui-img-round" >
+							</div>
+							<div class="aui-list-item-inner aui-list-item-arrow">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-14">
+										软件工程第一次作业
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									到期时间：2017-04-09 09:00
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</section>
+	</body>
+	<script type="text/javascript">
+		var pullRefresh = new auiPullToRefresh({
+			container : document.querySelector('.aui-refresh-content'),
+			triggerDistance : 100
+		}, function(ret) {
+			if (ret.status == "success") {
+				pullRefresh.cancelLoading();
+				//刷新成功后调用此方法隐藏
+			}
+		});
+		var slide3 = new auiSlide({
+			container : document.getElementById("aui-slide3"),
+			// "width":300,
+			"height" : 200,
+			"speed" : 500,
+			"autoPlay" : 3000, //自动播放
+			"loop" : true,
+			"pageShow" : true,
+			"pageStyle" : 'line',
+			'dotPosition' : 'center'
+		});
+		apiready = function() {
+			$BaseUI.addPageLoadMore(function() {
+				api.toast({
+					msg : '加载更多'
+				});
+			});
+		}
+		$api.addEvt($api.byId('notice'), 'click', function() {
+			$BaseUI.openWin('notice-list', './notice/notice-list.html');
+		});
+		$api.addEvt($api.byId('homework'), 'click', function() {
+			$BaseUI.openWin('work-list', './homework/work-list.html');
+		});
+		$api.addEvt($api.byId('calendar'), 'click', function() {
+			$BaseUI.openWin('calendar', './calendar.html');
+		});
+		$api.addEvt($api.byId('takePictures'), 'click', function() {
+			$BaseUI.actionSheet("请选择", ['相机', '附件'], '取消', function(ret) {
+				if (ret == 1) {
+					api.getPicture({
+						sourceType : 'camera',
+						encodingType : 'jpg',
+						mediaValue : 'pic',
+						destinationType : 'url',
+						allowEdit : true,
+						quality : 50,
+						targetWidth : 1000,
+						targetHeight : 1000,
+						saveToPhotoAlbum : false
+					}, function(ret, err) {
+						if (ret.data) {
+							//add2List(ret.data);
+							$BaseUI.openWin('take-pictures', './take-pictures.html');
+						}
+					});
+				} else if (ret == 2) {
+					var fileBrowser = api.require('fileBrowser');
+					fileBrowser.open(function(ret, err) {
+						if (ret) {
+							fileBrowser.close();
+							$BaseUI.openWin('take-pictures', './take-pictures.html');
+							//add2List(ret.url);
+						}
+					});
+				}
+			});
+		});
+		//学情页面
+		$api.addEvt($api.byId('learningCondition'), 'click', function() {
+			$BaseUI.openWin('learning-condition', './learning-condition/learning-condition.html');
+		});
+
+		//考勤页面
+		function attendance() {
+			$BaseUI.openWin("attendance", "./course-attendance/attendance.html");
+		}
+
+		//课堂测验
+		function quizzes() {
+			$BaseUI.openWin("quizzes", "./course-quizzes/alternative-course.html");
+		}
+
+		//成绩页面（平时成绩录入）
+		function score() {
+			$BaseUI.openWin("score", "./score/score-input.html");
+		}
+	</script>
+</html>

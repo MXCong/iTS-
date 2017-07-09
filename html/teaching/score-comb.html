@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>成绩组成</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>       
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+        <style>
+            .label {
+                padding: 10px;
+            }
+            .score-area {
+                padding: 15px;
+            }
+            .aui-list .aui-list-header{
+              font-size:0.7rem;
+              color:#999;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                成绩组成
+            </div>
+            <a class="aui-pull-right aui-btn f-15" onclick="save();">保存 </a>
+        </header>
+        <div class="aui-content aui-margin-t-10">
+            <ul class="aui-list aui-list-in">
+                <li class="aui-list-header">
+                    已选
+                </li>
+                <li >
+                    <div class="score-area selected"></div>
+                </li>
+                <li class="aui-list-header">
+                    可选
+                </li>
+                <li >
+                    <div class="score-area select"></div>
+                </li>
+            </ul>
+        </div>
+    </body>
+    <!-- 已选择 -->
+    <script id="scoreSelectedTemplate" type="text/template">
+        {{~ it:data }}
+        <div class="label aui-label  aui-label-info" sType={{=data.recordType}}  onclick="del(this,'{{=data.scoreName}}','{{=data.recordType}}');">
+        {{=data.scoreName}}
+        </div>
+        {{~}}
+    </script>
+    <!-- 未选择 -->
+    <script id="scoreUnSelectedTemplate" type="text/template">
+        {{~ it:data }}
+        <div class="label aui-label  aui-label-info" sType={{=data.recordType}}  onclick="select(this,'{{=data.scoreName}}','{{=data.recordType}}');">
+        {{=data.scoreName}}
+        </div>
+        {{~}}
+    </script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var scoreSelectedDot = doT.template($('#scoreSelectedTemplate').html());
+        var scoreUnSelectedDot = doT.template($('#scoreUnSelectedTemplate').html());
+        apiready = function() {
+            if (api.pageParam.scores) {
+                $('.selected').html(scoreSelectedDot(api.pageParam.scores));
+            }
+            getScores();
+        };
+        /**
+         *获取系统成绩组成
+         */
+        function getScores() {
+            $BaseUI.showPrgDlg();
+            $httpUtils.post('teacher/v1/getSystemScore', null, function(ret) {
+                $BaseUI.hidePrgDlg();
+                if (ret && ret.length > 0) {
+                    var selected = new Array();
+                    var unSelected = new Array();
+                    if ($('.selected').children().length == 0) {
+                        for (var i = 0; i < ret.length; i++) {
+                            if (ret[i].scoreName == '平时成绩' || ret[i].scoreName == '课堂测验') {
+                                selected.push(ret[i]);
+                            } else {
+                                unSelected.push(ret[i]);
+                            }
+                        }
+                    } else {
+                        for (var i = 0; i < ret.length; i++) {
+                            if (checkSelected(ret[i])) {
+                                selected.push(ret[i]);
+                            } else {
+                                unSelected.push(ret[i]);
+                            }
+                        }
+                    }
+                    $('.selected').html(scoreSelectedDot(selected));
+                    $('.select').html(scoreUnSelectedDot(unSelected));
+                }
+            }, function(msg) {
+                $BaseUI.hidePrgDlg();
+                $BaseUI.showHint($('.aui-content'), null, '网络错误,点击重试', function() {
+                    getScores();
+                });
+            });
+        }
+
+        function checkSelected(item) {
+            try {
+                $('.selected').children().each(function(i) {
+                    if ($(this).html().trim() == item.scoreName) {
+                        throw true;
+                    }
+                });
+                return false;
+            } catch(e) {
+                return e
+            }
+        }
+
+        /**
+         *删除
+         */
+        function del(tag, name, type) {
+            if (name == '平时成绩' || name == '课堂测验') {
+                api.toast({
+                    msg : name + "是系统默认,不可删除！"
+                });
+            } else {
+                $('.select').prepend(scoreUnSelectedDot([{scoreName:name,recordType:type}]));
+                $(tag).remove();
+            }
+        }
+
+        /**
+         *选中
+         */
+        function select(tag, name, type) {
+            $('.selected').prepend(scoreSelectedDot([{scoreName:name,recordType:type}]));
+            $(tag).remove();
+        }
+
+        /**
+         *保存结果
+         */
+        function save() {
+            var temps = new Array();
+            $('.selected').children().each(function(i) {
+                var item = {};
+                item.scoreId = $(this).attr('sId');
+                item.recordType = $(this).attr('sType');
+                item.scoreName = $(this).html();
+                temps.push(item);
+            });
+            api.sendEvent({
+                name : 'scoreChanged',
+                extra : {
+                    scores : temps
+                }
+            });
+            $BaseUI.closeWin();
+        }
+
+
+        $api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+    </script>
+</html>

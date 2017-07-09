@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>消息列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-list-swipe.js"></script>
+		<style>
+			.aui-list-item-inner.aui-swipe-handle {
+				overflow-x: hidden;
+				position: relative;
+				z-index: 1;
+				background-color: #ffffff;
+			}
+			.aui-swipe-btn {
+				position: absolute;
+				right: 0;
+				z-index: 0;
+				height: 100%;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-flex: 1;
+				-webkit-box-pack: justify;
+				-webkit-justify-content: space-between;
+				justify-content: space-between;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			.aui-swipe-btn .aui-btn {
+				border-radius: 0;
+				height: 100%;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			.donghua {
+				-webkit-transition-duration: 300ms;
+				transition-duration: 300ms;
+			}
+			.aui-list .aui-list-item-right, .aui-list-item-title-row em {max-width: 60%; color:#cbcbcb; font-size:0.65rem;}
+			.aui-list .aui-list-item-text { font-size:0.75rem; color:#868686;}
+			.aui-media-list .aui-list-item-inner { padding-right:0;}
+			.aui-list .aui-list-item-title { color:#000;}
+		</style>
+	</head>
+	<body>
+		<div class="aui-content aui-margin-b-15 aui-margin-t-10">
+			<ul class="aui-list">
+				<li class="aui-list-item" onclick="detail();">
+					<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+						<div class="aui-media-list aui-media-list-item-inner" style=" width: 100%;">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../../image/icon.png" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-16">
+										张三
+									</div>
+									<div class="aui-list-item-right">
+										2017-01-01 08:00
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									UIListMeeting 模块封装了一个数据列表控件，列表项水平侧滑可出现控制按钮
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-swipe-btn">
+						<div class="aui-btn aui-btn-info">
+							编辑
+						</div>
+						<div class="aui-btn aui-btn-danger">
+							删除
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" onclick="detail();">
+					<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+						<div class="aui-media-list aui-media-list-item-inner" style=" width: 100%;">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../../image/icon.png" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-16">
+										张三
+									</div>
+									<div class="aui-list-item-right">
+										2017-01-01 08:00
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									UIListMeeting 模块封装了一个数据列表控件，列表项水平侧滑可出现控制按钮
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-swipe-btn">
+						<div class="aui-btn aui-btn-info">
+							编辑
+						</div>
+						<div class="aui-btn aui-btn-danger">
+							删除
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" onclick="detail();">
+					<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+						<div class="aui-media-list aui-media-list-item-inner" style=" width: 100%;">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../../image/icon.png" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-16">
+										张三
+									</div>
+									<div class="aui-list-item-right">
+										2017-01-01 08:00
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									UIListMeeting 模块封装了一个数据列表控件，列表项水平侧滑可出现控制按钮
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-swipe-btn">
+						<div class="aui-btn aui-btn-info">
+							编辑
+						</div>
+						<div class="aui-btn aui-btn-danger">
+							删除
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" onclick="detail();">
+					<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+						<div class="aui-media-list aui-media-list-item-inner" style=" width: 100%;">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../../image/icon.png" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-16">
+										张三
+									</div>
+									<div class="aui-list-item-right">
+										2017-01-01 08:00
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									UIListMeeting 模块封装了一个数据列表控件，列表项水平侧滑可出现控制按钮
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-swipe-btn">
+						<div class="aui-btn aui-btn-info">
+							编辑
+						</div>
+						<div class="aui-btn aui-btn-danger">
+							删除
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" onclick="detail();">
+					<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+						<div class="aui-media-list aui-media-list-item-inner" style=" width: 100%;">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img src="../../image/icon.png" class="aui-img-round aui-list-img-sm">
+							</div>
+							<div class="aui-list-item-inner">
+								<div class="aui-list-item-text">
+									<div class="aui-list-item-title aui-font-size-16">
+										张三
+									</div>
+									<div class="aui-list-item-right">
+										2017-01-01 08:00
+									</div>
+								</div>
+								<div class="aui-list-item-text">
+									UIListMeeting 模块封装了一个数据列表控件，列表项水平侧滑可出现控制按钮
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-swipe-btn">
+						<div class="aui-btn aui-btn-info">
+							编辑
+						</div>
+						<div class="aui-btn aui-btn-danger">
+							删除
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+		};
+		function detail() {
+			$BaseUI.openWin('chat', './chat.html');
+		}
+
+		var swipe = new auiListSwipe(function(ret) {
+		});
+	</script>
+</html>

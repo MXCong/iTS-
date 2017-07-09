@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>新增授课</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+        <script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+        <style>
+
+            .score-area {
+                padding: 15px;
+            }
+            .label {
+                padding: 10px;
+            }
+            .aui-title{
+              font-size: 16px;
+            }
+            #save{
+              font-size: 15px;
+            }
+            .aui-list .aui-list-header{
+          		font-size:0.7rem;
+          		color:#999;
+          	}
+            .aui-list-item-arrow:before{
+              right:0.1rem;
+            }
+            .aui-list-item-inner.aui-list-item-arrow{
+              padding-right:0.75rem;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                新增授课
+            </div>
+            <a class="aui-pull-right aui-btn" id="save"> 保存 </a>
+        </header>
+        <div class="aui-content aui-margin-b-15 aui-margin-t-10">
+            <ul class="aui-list aui-list-in">
+                <li class="aui-list-header">
+                    基本信息
+                </li>
+                <li class="aui-list-item" id="course">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            所属课程
+                        </div>
+                        <div class="aui-list-item-right" id="courseLibName">
+                            点击选择所属课程
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            授课名称
+                        </div>
+                        <div class="aui-list-item-input inptxt">
+                            <input type="text" class="mr" placeholder="请输入授课名称" id="courseName">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" id="teachMethod">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            授课方式
+                        </div>
+                        <div class="aui-list-item-right" id="teachMethodValue">
+                            点击选择授课方式
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" id="examMethod">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            考核方式
+                        </div>
+                        <div class="aui-list-item-right" id="examMethodValue">
+                            点击选择考核方式
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-header mt-5">
+                    授课班级 <i class="aui-iconfont aui-text-primary" id="classEdit">编辑</i>
+                </li>
+                <li class="aui-list-header  aui-margin-t-0 mt-5" >
+                    成绩组成 <i class="aui-iconfont  aui-text-primary" id="scoreEdit">编辑</i>
+                </li>
+                <li >
+                    <div class="score-area"></div>
+                </li>
+            </ul>
+        </div>
+    </body>
+    <script id="classTemplate" type="text/template">
+        {{~ it:data }}
+        <li class="aui-list-item classItem" grade={{=data.grade}} majorId={{=data.majorId}} className={{=data.className}} classType={{=data.classType}}>
+        <div class="aui-list-item-inner">
+        <div class="aui-list-item-title">
+        <span>{{=data.className}}</span>
+        </div>
+        <div class="aui-list-item-right">
+        <div class="aui-label aui-label-danger" onclick="delClass(this)">
+        删除
+        </div>
+        </div>
+        </div>
+        </li>
+        {{~}}
+    </script>
+    <!-- 已选择 -->
+    <script id="scoreTemplate" type="text/template">
+        {{~ it:data }}
+        <div class="label aui-label scoreItem aui-label-info" sType={{=data.recordType}}  >
+        {{=data.scoreName}}
+        </div>
+        {{~}}
+    </script>
+    <script type="text/javascript">
+        var courseLibId = null;
+        var courseLibName = null;
+        var termId = null;
+        var classDot = doT.template($('#classTemplate').html());
+        var scoreDot = doT.template($('#scoreTemplate').html());
+        var courseId = null;
+        apiready = function() {
+            courseId = api.pageParam.courseId;
+            if (courseId) {
+                $BaseUI.showPrgDlg('正在加载..');
+                getTeachingDetail();
+            }
+            addBroadCastListener();
+            var cTerm = $api.strToJson(($PrefsUtils.getPref('defultTerm')));
+            if (null != cTerm) {
+                termId = cTerm.termId;
+            }
+        };
+        /**
+         *获取授课详情
+         */
+        function getTeachingDetail() {
+            var params = {};
+            params.courseId = courseId;
+            $httpUtils.post('teacher/v1/teachingDetail', params, function(ret) {
+                $BaseUI.hidePrgDlg();
+                if (ret) {
+                    courseLibId = ret.courseLibId;
+                    courseLibName = ret.courseLibName;
+                    $('#courseLibName').html(ret.courseLibName);
+                    $('#courseName').val(ret.courseName);
+                    $('#teachMethod').attr('dId', ret.teachingMethodId);
+                    $('#teachMethodValue').html(ret.teachingMethodName);
+                    $('#examMethod').attr('dId', ret.examMethodId);
+                    $('#examMethodValue').html(ret.examMethodName);
+                    $('#classEdit').parent().after(classDot(ret.classes));
+                    $('.score-area').html(scoreDot(ret.scores));
+                }
+            }, function(msg) {
+                $BaseUI.hidePrgDlg();
+                if (msg) {
+                    api.toast({
+                        msg : msg
+                    });
+                }
+            });
+        }
+
+        /**
+         *监听广播事件
+         */
+        function addBroadCastListener() {
+            api.addEventListener({
+                name : 'courseSelect'
+            }, function(ret, err) {
+                courseLibId = ret.value.courseId;
+                courseLibName = ret.value.courseName;
+                $('#courseLibName').html(courseLibName);
+                if (!$('#courseName').val()) {
+                    $('#courseName').val(courseLibName);
+                }
+            });
+            api.addEventListener({
+                name : 'dictionarySelect'
+            }, function(ret, err) {
+                if (ret) {
+                    switch(ret.value.type) {
+                        case 2:
+                            $('#teachMethod').attr('dId', ret.value.dId);
+                            $('#teachMethodValue').html(ret.value.dName);
+                            break;
+                        case 3:
+                            $('#examMethod').attr('dId', ret.value.dId);
+                            $('#examMethodValue').html(ret.value.dName);
+                            break;
+                    }
+                }
+            });
+            api.addEventListener({
+                name : 'classesChanged'
+            }, function(ret, err) {
+                $('.classItem').remove();
+                $('#classEdit').parent().after(classDot(ret.value.classes));
+            });
+            api.addEventListener({
+                name : 'scoreChanged'
+            }, function(ret, err) {
+                $('.scoreItem').remove();
+                $('.score-area').html(scoreDot(ret.value.scores));
+            });
+        }
+
+
+        $api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+        $api.addEvt($api.byId('course'), 'click', function() {
+            $BaseUI.openWin('course-select', './course-select.html');
+        });
+        $api.addEvt($api.byId('teachMethod'), 'click', function() {
+            var param = {};
+            param.type = 2;
+            param.title = '授课方式'
+            $BaseUI.openWin('teaching-method', './teaching-method.html', param);
+        });
+        $api.addEvt($api.byId('examMethod'), 'click', function() {
+            var param = {};
+            param.type = 3;
+            param.title = '考核方式'
+            $BaseUI.openWin('teaching-method', './teaching-method.html', param);
+        });
+        $api.addEvt($api.byId('scoreEdit'), 'click', function() {
+            if ($('.scoreItem').length > 0) {
+                var temps = new Array();
+                $('.scoreItem').each(function(i) {
+                    var item = {};
+                    item.recordType = $(this).attr('sType');
+                    item.scoreName = $(this).html();
+                    temps.push(item);
+                });
+                $BaseUI.openWin('score-comb', './score-comb.html', {
+                    scores : temps
+                });
+            } else {
+                $BaseUI.openWin('score-comb', './score-comb.html');
+            }
+        });
+        $api.addEvt($api.byId('classEdit'), 'click', function() {
+            if ($('.classItem').length > 0) {
+                var temps = new Array();
+                $('.classItem').each(function(i) {
+                    var temp = {};
+                    temp.grade = $(this).attr("grade");
+                    temp.className = $(this).attr("className");
+                    temp.majorId = $(this).attr("majorId");
+                    temp.classType = $(this).attr("classType");
+                    temps.push(temp);
+                });
+                $BaseUI.openWin('course-class', './course-class.html', {
+                    classes : temps
+                });
+            } else {
+                $BaseUI.openWin('course-class', './course-class.html');
+            }
+        });
+        /**
+         *保存
+         */
+        $api.addEvt($api.byId('save'), 'click', function() {
+            if (!$('#courseName').val()) {
+                alert('请填写授课名称！');
+                return;
+            }
+            if (!courseLibName) {
+                alert('请选择所属课程！');
+                return;
+            }
+            if (!$('#teachMethod').attr('dId')) {
+                alert('请选择授课方式！');
+                return;
+            }
+            if (!$('#examMethod').attr('dId')) {
+                alert('请选择考核方式！');
+                return;
+            }
+            if ($('.classItem').length == 0) {
+                alert('请添加授课的班级！');
+                return;
+            }
+            if ($('.scoreItem').length == 0) {
+                alert('请添加授课成绩组成！');
+                return;
+            }
+            var params = {};
+            params.termId = termId;
+            params.courseId = courseId;
+            params.courseName = $('#courseName').val();
+            params.courseLibId = courseLibId;
+            params.teachMethodId = $('#teachMethod').attr('dId');
+            params.examMethodId = $('#examMethod').attr('dId');
+            var classes = new Array();
+            $('.classItem').each(function(i) {
+                var classTemp = {};
+                classTemp.grade = $(this).attr("grade");
+                classTemp.className = $(this).attr("className");
+                classTemp.majorId = $(this).attr("majorId");
+                classTemp.classType = $(this).attr("classType");
+                classes.push(classTemp);
+            });
+            params.classes = classes;
+            var scores = new Array();
+            $('.scoreItem').each(function(i) {
+                var item = {};
+                item.recordType = $(this).attr('sType');
+                item.scoreName = $(this).html();
+                scores.push(item);
+            });
+            params.scores = scores;
+            $BaseUI.showPrgDlg('正在保存..');
+            $httpUtils.post('teacher/v1/andOrUpdateTeaching', params, function(ret) {
+                $BaseUI.hidePrgDlg();
+                if (ret) {
+                    var dialog = new auiDialog({});
+                    api.sendEvent({
+	                    name:'teachingChanged'
+                    });
+                    dialog.alert({
+                        title : "提示",
+                        msg : "保存成功!!!",
+                        buttons : ['确定']
+                    }, function(res) {
+                        $BaseUI.closeToWin('timetable-edit', './timetable-edit.html', {
+                            courseId:ret.courseId
+                        });
+                    });
+                }
+            }, function(msg) {
+                $BaseUI.hidePrgDlg();
+                if (msg) {
+                    alert(msg);
+                }
+            });
+        });
+        /**
+         *删除班级
+         */
+        function delClass(tag) {
+            $(tag).parent().parent().parent().remove();
+        }
+    </script>
+</html>

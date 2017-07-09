@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script src="../../script/api.js"></script>
+		<script src="../../script/aui/aui-tab.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-popup-new.js" ></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav" id="aui-header">
+			<a class="aui-pull-left aui-btn" id="back"><span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title" id="filter">
+				全部课程<span class="aui-iconfont aui-icon-top" id="titleArror"></span>
+			</div>
+		</header>
+		<div class="aui-bar aui-bar-btn aui-bar-btn-round" style="width:90%;margin-top: 5px;">
+			<div class="aui-bar-btn-item aui-active">
+				成绩
+			</div>
+			<div class="aui-bar-btn-item">
+				出勤
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var popup = new auiPopup();
+		apiready = function() {
+			api.parseTapmode();
+			openFrame('score-list');
+			//按钮组选择器
+			initBar();
+		};
+		function openFrame(name) {
+			var header = $api.byId('aui-header');
+			$api.fixStatusBar(header);
+			var headerPos = $api.offset(header);
+			var body_h = $api.offset($api.dom('body')).h;
+			api.openFrame({
+				name : name,
+				url : name + '.html',
+				bounces : false,
+				rect : {
+					x : 0,
+					y : headerPos.h + 45,
+					w : 'auto',
+					h : 'auto'
+				}
+			})
+		}
+
+
+		$api.addEvt($api.byId('filter'), 'click', function() {
+			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+			$api.addCls($api.byId('titleArror'), 'aui-icon-down');
+			$BaseUI.actionSheet("请选择授课", ['全部授课', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)'], '取消', function(ret) {
+				$api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+				$api.addCls($api.byId('titleArror'), 'aui-icon-top');
+			});
+		});
+		//初始化按钮选择器
+		function initBar() {
+			var bar = document.querySelectorAll(".aui-bar-btn");
+			if (bar) {
+				for (var i = 0; i < bar.length; i++) {
+					var d = bar[i];
+					var tab = new auiTab({
+						element : bar[i],
+						repeatClick : true
+					}, function(ret) {
+						if (1 == ret.index) {//成绩
+							openFrame('score-list');
+						} else if (2 == ret.index) {//出勤
+							openFrame('attendance-list');
+						}
+					});
+				}
+			}
+		}
+
+		//返回按钮
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
+</html>

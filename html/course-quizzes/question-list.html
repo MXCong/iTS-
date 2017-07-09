@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/head.css">
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"><span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title" id="filter">
+				绪论<span class="aui-iconfont aui-icon-top" id="titleArror"></span>
+			</div>
+		</header>
+		
+	</body>
+	<script type="text/javascript">
+        apiready = function() {
+        	$BaseUI.openFrame('question-list-frame', 'question-list-frame.html');
+        };
+       	$api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+    </script>
+	
+</html>

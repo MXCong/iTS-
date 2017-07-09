@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>课表详情</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				课表详情
+			</div>
+			<a class="aui-pull-right aui-btn" id="edit">编辑 </a>
+		</header>
+	</body>
+	<script type="text/javascript">
+		var courseId = null;
+		apiready = function() {
+			courseId = api.pageParam.courseId;
+			$BaseUI.openFrame('timetable-detail-f', './timetable-detail-f.html', {
+				courseId : courseId
+			});
+		};
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('edit'), 'click', function() {
+			var jsfun = 'doEdit();';
+			api.execScript({
+				frameName : 'timetable-detail-f',
+				script : jsfun
+			});
+		});
+	</script>
+</html>

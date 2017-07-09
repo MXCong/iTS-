@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>MyApp</title>
+		<link rel="stylesheet" href="../script/framework7/css/framework7.ios.min.css">
+		<link rel="stylesheet" href="../script/welcome_screen/css/main.css">
+		<link rel="stylesheet" href="../script/welcome_screen/css/welcomescreen.css">
+		<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	</head>
+	<body>
+		<!-- Header -->
+		<!-- Status bar overlay for fullscreen mode-->
+		<div class="statusbar-overlay"></div>
+		<!-- Panels overlay-->
+		<div class="panel-overlay"></div>
+		<!-- /Header -->
+		<!-- Views-->
+		<div class="views">
+			<!-- Your main view, should have "view-main" class-->
+			<div class="view view-main">
+				<!-- Top Navbar-->
+				<!--<div class="navbar">-->
+					<!-- Navbar page 1 -->
+					<!-- <div class="navbar-inner">
+						<div class="center sliding">
+							教学助手手机端欢迎页
+						</div>
+					</div> -->
+				<!--</div>-->
+				<!-- Pages, because we need fixed-through navbar and toolbar, it has additional
+				appropriate classes-->
+				<div class="pages navbar-through toolbar-through">
+					<!-- - [Page 1] ---------------------------------------- -->
+					<div data-page="index" class="page" ng-controller="IndexPageController">
+						<!-- Page content-->
+						<!-- <div class="page-content">
+							<div class="content-block">
+								<p>
+									This plugin will display a fullscreen swipeable modal window to guide the user through a welcome screen
+								</p>
+								<p>
+									<a href="#" class="tutorial-open-btn button">Open Welcome Screen</a>
+								</p>
+							</div>
+						</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../script/framework7/js/framework7.min.js"></script>
+		<script type="text/javascript" src="../script/welcome_screen/js/welcomescreen.js"></script>
+		<script type="text/javascript" src="../script/welcome_screen/js/myapp/pages/IndexPageController.js"></script>
+		<script type="text/javascript" src="../script/welcome_screen/js/myapp/init.js"></script>
+		<script type="text/javascript" src="../script/api.js"></script>
+	</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>新增/编辑学期</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/homework.css">
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/utils/picker.min.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-range.js" ></script>
+		<style>
+			.aui-list-item-arrow:before {
+				right: 0.1rem;
+			}
+			.aui-list .aui-list-item-inner {
+				padding: 0 0.1rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title" id="title">
+				创建学期
+			</div>
+			<a class="aui-pull-right aui-btn" id="edit"> 创建 </a>
+		</header>
+		<div class="aui-content aui-margin-t-10">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							学期名称
+						</div>
+						<input type="hidden" id="termId" />
+						<div class="aui-list-item-right" id="startYear">
+							
+						</div>
+						-
+						<div class="aui-list-item-right" id="endYear">
+							
+						</div>
+						学年第
+						<div class="aui-list-item-right" id="termNum">
+							
+						</div>
+						学期
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner aui-list-item-arrow">
+						<div class="aui-list-item-title">
+							开始日期
+						</div>
+						<div class="aui-list-item-right">
+							<div style="position:relative;top:0; right:0.75rem;" id="startDate">
+								点击选择开始日期
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							学期周数
+						</div>
+						<!--<div class="aui-list-item-right">
+						<div style="position:relative;top:0; right:0" id="weekCount">
+						点击选择学期周数
+						</div>
+						</div>-->
+						<div class="aui-range">
+							<input type="range" class="aui-range-danger" value="18" max="25" min="1" step="1" id="range" />
+						</div>
+						<p>
+							周长：<span id="weekCount"></span>
+						</p>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							结束日期
+						</div>
+						<div class="aui-list-item-right" id="endDate">
+							
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							默认学期
+						</div>
+						<div class="aui-list-item-right">
+							<input type="checkbox" class="aui-switch" id="checkBox">
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var gradeArr = new Array();
+		var gradePicker = null;
+		apiready = function() {
+			var termId = api.pageParam.termId;
+			if (termId) {//学期编辑操作
+				changeStyle();
+				getTermDetail(termId);
+			} else {
+				//获取学期的缺省值
+				getAdviceTerm();
+			}
+			initGrade();
+			//初始化选择器
+		};
+		//获取学期的缺省值
+		function getAdviceTerm() {
+			$BaseUI.showPrgDlg('咦？天上有飞机！！');
+			$httpUtils.post('teacher/v1/getAdviceTerm', '', function(ret) {
+				$BaseUI.hidePrgDlg();
+				if (ret) {
+					$api.text($api.byId("startYear"), ret.startYear);
+					$api.text($api.byId("endYear"), ret.endYear);
+					$api.text($api.byId("termNum"), ret.termNum);
+					$api.text($api.byId("startDate"), ret.startDate);
+					$api.text($api.byId("weekCount"), ret.weekCount);
+					$api.text($api.byId("endDate"), ret.endDate);
+				}
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//学期详细信息(编辑学期功能)
+		function getTermDetail(termId) {
+			var params = {};
+			params.termId = termId;
+			$BaseUI.showPrgDlg();
+			$httpUtils.post('teacher/v1/termDetail', params, function(ret) {
+				//alert(JSON.stringify(ret));
+				if (ret) {
+					$api.text($api.byId("termId"), ret.termId);
+					$api.text($api.byId("startYear"), ret.startYear);
+					$api.text($api.byId("endYear"), ret.endYear);
+					$api.text($api.byId("termNum"), ret.termNum);
+					$api.text($api.byId("startDate"), ret.startDate);
+					$api.text($api.byId("weekCount"), ret.weekCount);
+					$api.text($api.byId("endDate"), ret.endDate);
+					$api.val($api.byId("range"), ret.weekCount);
+					if (ret.isDefult == 1) {
+						//$('#checkBox').attr("checked", true);
+						$api.attr($api.byId("checkBox"), "checked", true);
+					}
+				}
+				$BaseUI.hidePrgDlg();
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//学期周长滑块
+		var range = new auiRange({
+			element : $api.byId("range")
+		}, function(ret) {
+			document.getElementById("weekCount").textContent = ret.value;
+			countEndDate();
+		})
+		//创建学期
+		$api.addEvt($api.byId("edit"), "click", function() {
+			var param = {};
+			var startYear = $api.text($api.byId("startYear"));
+			var endYear = $api.text($api.byId("endYear"));
+			var termNum = $api.text($api.byId("termNum"));
+			var startDate = $api.text($api.byId("startDate"));
+			var weekCount = $api.text($api.byId("weekCount"));
+			var endDate = $api.text($api.byId("endDate"));
+			var termId = $api.text($api.byId("termId"));
+			if (!startYear) {
+				alert("请完善学期名称");
+				return;
+			}
+			if (!endYear) {
+				alert("请完善学期名称");
+				return;
+			}
+			if (!termNum) {
+				alert("请完善学期名称");
+				return;
+			}
+			if (!startDate) {
+				alert("请选择开始时间！");
+				return;
+			}
+			if (!weekCount) {
+				alert("请选择持续周数！");
+				return;
+			}
+			param.startYear = startYear;
+			param.endYear = endYear;
+			param.termNum = termNum;
+			param.startDate = startDate;
+			param.weekCount = weekCount;
+			param.endDate = endDate;
+			param.termId = termId;
+			if ($('#checkBox').is(':checked')) {
+				param.isDefult = 1;
+			} else {
+				param.isDefult = 0;
+			}
+			if (termId) {
+				param.termId = termId;
+			}
+			$BaseUI.showPrgDlg();
+			$httpUtils.post('teacher/v1/addTerm', param, function(ret) {
+				$BaseUI.hidePrgDlg();
+				if (param.termId) {
+					api.toast({
+						msg : "修改成功"
+					});
+					//getTermDetail(param.termId);
+					api.sendEvent({
+						name : 'termEdit',
+						extra : {
+							termId : param.termId
+						}
+					});
+				} else {
+					api.toast({
+						msg : JSON.stringify(ret)
+					});
+					api.sendEvent({
+						name : 'addTerm'
+					});
+				}
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		});
+		//学期编辑操作
+		function changeStyle() {
+			$api.text($api.byId('title'), "学期编辑");
+			$api.text($api.byId('edit'), "保存");
+		}
+
+		//日期选择器
+		$api.addEvt($api.byId("startDate"), "click", function() {
+			$BaseUI.showActionSelector("widget://res/date.json", 4, function(ret) {
+			});
+		});
+		//初始化开始年份
+		function initGrade() {
+			var date = new Date;
+			var year = date.getFullYear() - 5;
+			for ( i = 0; i < 10; i++) {
+				gradeArr.push({
+					text : year + i,
+					value : year + i
+				});
+			}
+			gradePicker = new Picker({
+				data : [gradeArr],
+				title : '请选择年份'
+			});
+			gradePicker2 = new Picker({
+				data : [gradeArr],
+				title : '请选择年份'
+			});
+			var datas = [{
+				text : '一',
+				value : '一'
+			}, {
+				text : '二',
+				value : '二'
+			}, {
+				text : '三',
+				value : '三'
+			}, {
+				text : '四',
+				value : '四'
+			}];
+			gradePicker3 = new Picker({
+				data : [datas],
+				title : '请选择学期'
+			});
+			gradePicker.on('picker.select', function(selectedVal, selectedIndex) {
+				$('#startYear').html(selectedVal);
+				var sy = selectedVal;
+				var ey = parseInt(sy) + 1;
+				$api.text($api.byId("startYear"), sy);
+				$api.text($api.byId("endYear"), ey);
+			})
+			gradePicker2.on('picker.select', function(selectedVal, selectedIndex) {
+				$('#endYear').html(selectedVal);
+			})
+			gradePicker3.on('picker.select', function(selectedVal, selectedIndex) {
+				$('#termNum').html(selectedVal);
+			})
+			$('#startYear').bind('click', function() {
+				gradePicker.show();
+			});
+			$('#endYear').bind('click', function() {
+				gradePicker2.show();
+			});
+			$('#termNum').bind('click', function() {
+				gradePicker3.show();
+			});
+		}
+
+		//计算学期结束日期
+		function countEndDate() {
+			var startDate = $api.text($api.byId("startDate"));
+			var weekCount = $api.text($api.byId("weekCount"));
+			console.log("startDate:" + startDate + "   weekCount:" + weekCount);
+			var endD = dateSubmit(startDate, weekCount);
+			$api.text($api.byId("endDate"), endD);
+		}
+
+		/**
+		 *指定日期加周数
+		 * @date 指定日期字符串
+		 * @days 天数
+		 */
+		function dateSubmit(date, days) {
+			console.log('date:' + date + "        days:" + days);
+			var objDate;
+			objDate = new Date(date);
+			console.log('objDate:' + objDate);
+			var weekFirstDay = getWeekFirstDay(objDate);
+			console.log('weekFirstDay:' + weekFirstDay);
+			var objDate2 = new Date(weekFirstDay);
+			objDate2.setDate(weekFirstDay.getDate() + days * 7 - 1);
+			var m = objDate2.getMonth() + 1;
+			if (m < 10) {
+				m = '0' + m;
+			}
+			var d = objDate2.getDate();
+			if (d < 10) {
+				d = '0' + d;
+			}
+			var times = objDate2.getFullYear() + "-" + m + "-" + d;
+			console.log('times:' + times);
+			return times;
+		}
+
+		/**
+		 *返回Nowdate所在周的第一天
+		 */
+		function getWeekFirstDay(Nowdate) {
+			var WeekFirstDay = new Date(Nowdate - (Nowdate.getDay() - 1) * 86400000);
+			return WeekFirstDay;
+		}
+
+
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
+</html>

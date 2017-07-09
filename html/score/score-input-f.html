@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>成绩详情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+    <script src="../../script/utils/baseUI.js"></script>
+    <script type="text/javascript" src="../../script/aui/aui-popup-new.js" ></script>
+    <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+    <script src="../../script/api.js"></script>
+    <style type="text/css">
+        .text-white {
+            color: #ffffff !important;
+        }
+        .aui-grid [class*=aui-col-] {
+            padding: 0.75rem 0;
+        }
+        body{
+          background: #f5f5f5;
+        }
+        .aui-info{
+          background: #fff;
+        }
+        .aui-info-item{
+          width:100%;
+        }
+        .aui-grid{
+          background: none;
+          border-bottom:1px solid #f5f5f5;
+        }
+        .aui-row{
+          background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部 -->
+    <div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				<div class="aui-margin-l-5 w-98">选择授课课程</div>
+				<div class="aui-iconfont aui-icon-right fr w-2" id="filter"></div>
+			</div>
+		</div>
+		<div class="aui-searchbar top-10 botm-5" id="search">
+			<div class="aui-searchbar-input aui-border-radius" tapmode>
+				<i class="aui-iconfont aui-icon-search"></i>
+				<form action="javascript:search();">
+					<input type="search" placeholder="请输入搜索内容" id="search-input">
+				</form>
+			</div>
+			<div class="aui-searchbar-cancel" tapmod>
+				取消
+			</div>
+		</div>
+		<div class="aui-iconfont aui-icon-question qust"><span>点击学生，可进行平时成绩录入哦~<span></div>
+		<section class="aui-grid ">
+			<div class="aui-row">
+				<div class="aui-col-xs-3">
+					学号
+				</div>
+				<div class="aui-col-xs-3">
+					姓名
+				</div>
+				<div class="aui-col-xs-3">
+					平时成绩
+				</div>
+				<div class="aui-col-xs-3 ">
+					测验成绩
+				</div>
+			</div>
+		</section>
+		<section class="aui-grid mt-5">
+			<div class="aui-row" tapmode onclick="openDialog('input')">
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						20131308083
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						张三
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						好
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						好
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="aui-grid">
+			<div class="aui-row" tapmode onclick="openDialog('input')">
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						20131308084
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						李四
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						——
+					</div>
+				</div>
+				<div class="aui-col-xs-3">
+					<div class="aui-grid-label">
+						好
+					</div>
+				</div>
+			</div>
+		</section>
+</body>
+
+<script type="text/javascript">
+  var popup = new auiPopup();
+  var dialog = new auiDialog();
+  apiready = function() {
+    api.parseTapmode();
+  };
+
+  //授课选择
+  $api.addEvt($api.byId('filter'), 'click', function() {
+          $api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+          $api.addCls($api.byId('titleArror'), 'aui-icon-down');
+          $BaseUI.actionSheet("请选择授课", ['全部授课', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)'], '取消', function(ret) {
+              $api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+              $api.addCls($api.byId('titleArror'), 'aui-icon-top');
+          });
+      });
+
+  //学生加分弹窗
+  function openDialog(type) {
+    switch (type) {
+      case "input":
+        dialog.prompt({
+          title : "平时成绩",
+          text : '建议百分制',
+          type : 'number',
+          buttons : ['取消', '确定']
+        }, function(ret) {
+          if (ret.buttonIndex == 2) {
+            dialog.alert({
+              title : "提示",
+              msg : "您输入的内容是：" + ret.text,
+              buttons : ['确定']
+            });
+          }
+        })
+        break;
+      default:
+        break;
+    }
+  }
+
+  //返回按钮
+  function fnClo() {
+    $BaseUI.closeWin();
+  }
+</script>
+</html>

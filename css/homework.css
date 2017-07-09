@@ -1,0 +1,100 @@
+
+/*homework-edit*/
+
+.content .aui-list{ background:none; }
+.content .aui-list-item{ background: #fff; }
+.content .aui-list .top-5{ margin-top:5px; }
+.content .aui-list .bottom-5{ margin-bottom:5px;}
+.content .aui-badge{ background:none;  }
+.content .aui-list-item-input input[type="text"]{ height:1.2rem; }
+
+
+
+/*设置placeholder的字体颜色*/
+input::-webkit-input-placeholder,textarea::-webkit-input-placeholder { /* WebKit browsers */
+color: #999;
+}
+input:-moz-placeholder,textarea:-moz-placeholder{ /* Mozilla Firefox 4 to 18 */
+color: #999;
+}
+input::-moz-placeholder,textarea::-moz-placeholder { /* Mozilla Firefox 19+ */
+color: #999;
+}
+input:-ms-input-placeholder,textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
+color: #999;
+}
+
+/*homework-detail*/
+.aui-content{ margin-top:5px; }
+.aui-content .aui-list{ background: none; }
+.aui-content .aui-list .nbgimg{ background-image:none; }
+.aui-content .aui-list-item{background: #fff;  }
+.aui-content .aui-list .top-5{margin-top:5px;}
+.aui-content .aui-list .aui-list-item-title{ color:#333; }
+.aui-content .aui-list .aui-list-item-right{ color:#999; font-size: 0.7rem; }
+.aui-content .aui-grid .aui-grid-label{ font-size: 0.6rem; color:#999; }
+.aui-content .aui-list-item .aui-list-item-input{ color:#666;}
+
+
+/*notice-edit*/
+.content .aui-list-item .aui-label{ background:none;}
+.content .aui-list .rinput{ width:70%;}
+.content .aui-list-item .bgimg{
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-image: linear-gradient(0,#dddddd,#dddddd 50%,transparent 50%);
+    background-image: -webkit-linear-gradient(90deg,#dddddd,#dddddd 50%,transparent 50%); padding-bottom:10px;}
+.aui-content .aui-list-item .bgimg{
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-image: linear-gradient(0,#dddddd,#dddddd 50%,transparent 50%);
+    background-image: -webkit-linear-gradient(90deg,#dddddd,#dddddd 50%,transparent 50%); padding-bottom:10px;}
+
+
+/*score-input*/
+.fr{ float:right;}
+.aui-info-item .w-98{width:97%; color:#333;}
+.aui-info-item .w-2{width:3%;}
+.top-10{ margin-top:10px;}
+.botm-5{ margin-bottom:5px;}
+.qust{ font-size:0.5rem; color:#999; line-height: 1rem; margin-left:10px;}
+.qust span{ padding-left: 5px;}
+.mt-5{ margin-top:5px;}
+
+
+/*teaching-edit*/
+.aui-content .aui-list .aui-list-header{ background-color:#f5f5f5;}
+.aui-list .inptxt input[type='text']{float:right; text-align: right;  right:0;  color:#999; font-size:0.7rem;}
+
+.aui-content .aui-list .mt-5{ margin-top:5px;}
+
+
+/*timetable-edit_f*/
+.aui-list-item .inpmr input[type='text']{ text-align: right;}
+.aui-list-item .inpmr input[type='date']{ text-align: right; font-size: 0.7rem; color:#999;}
+.aui-list-item .aui-list-item-input{ padding-right:0px; }
+
+
+/*设置头部a的伪类*/
+.aui-bar a:link {color: #fff} /* 未访问的链接 */
+.aui-bar a:visited {color: #fff} /* 已访问的链接 */
+.aui-bar a:hover {color: #fff} /* 当有鼠标悬停在链接上 */
+.aui-bar a:active {color: #fff} /* 被选择的链接 */
+
+/*设置 header 字体*/
+.aui-bar .aui-title{font-size: 16px;}
+.aui-bar .aui-pull-left{font-size: 15px;}
+.aui-bar .aui-pull-right{font-size: 15px;}
+
+/*term-edit_f*/
+.aui-list.aui-list-in .aui-list-item{ margin-right:0.75rem;}
+.aui-list.aui-list-in .aui-list-item:last-child{ padding-left:0px; margin-left:0.75rem; margin-right:0.75rem; padding-right:0rem;}
+
+
+/*my-info-edit-f*/
+.aui-list-item .myinput input[type='number']{ text-align: right; margin-right:0; color:#999;}
+.aui-list-item .myinput input[type='text']{ text-align: right; margin-right:0; color:#999;}
+.aui-list-item .myinput input[type='radio']{ float:right; margin-right:0; font-size: 0.7rem; color:#999;}
+.aui-list-item .myinput label{ float:right; margin-left:5px;}

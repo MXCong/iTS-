@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>通知列表</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-pull-refresh.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-list-swipe.js"></script>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <style>
+            .aui-list-item-inner.aui-swipe-handle {
+                overflow-x: hidden;
+                position: relative;
+                z-index: 1;
+                background-color: #ffffff;
+            }
+            .aui-swipe-btn {
+                position: absolute;
+                right: 0;
+                z-index: 0;
+                height: 100%;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-box-flex: 1;
+                -webkit-box-pack: justify;
+                -webkit-justify-content: space-between;
+                justify-content: space-between;
+                -webkit-box-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+            }
+            .aui-swipe-btn .aui-btn {
+                border-radius: 0;
+                height: 100%;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-box-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+            }
+            .donghua {
+                -webkit-transition-duration: 300ms;
+                transition-duration: 300ms;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="aui-content aui-margin-b-15 aui-margin-t-10 aui-refresh-content" >
+            <ul class="aui-list" id="list"></ul>
+        </div>
+    </body>
+    <script id="noticeTemplate" type="text/template">
+        {{~ it:data }}
+        <li class="aui-list-item" onclick="detail('{{=data.noticeId}}');">
+        <div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+        <div class="aui-media-list aui-media-list-item-inner">
+        <div class="aui-list-item-media" style="width: 3rem;">
+        <img src="../../image/published.png" class="aui-img-round aui-list-img-sm">
+        </div>
+        <div class="aui-list-item-inner">
+        <div class="aui-list-item-text">
+        <div class="aui-list-item-title aui-font-size-14">
+        {{=data.title}}
+        </div>
+        <div class="aui-list-item-right publishTime" time={{=data.publishTime}}>
+        </div>
+        </div>
+        <div class="aui-list-item-text">
+        {{=data.content}}
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="aui-swipe-btn">
+        <div class="aui-btn aui-btn-info" onclick="edit('{{=data.noticeId}}');">
+        编辑
+        </div>
+        <div class="aui-btn aui-btn-danger">
+        删除
+        </div>
+        </div>
+        </li>
+        {{~}}
+    </script>
+    <script type="text/javascript">
+        var dot = doT.template($('#noticeTemplate').html());
+        apiready = function() {
+            getNoticeList();
+        };
+        var swipe = new auiListSwipe(function(ret) {
+        });
+        function detail(id) {
+            $BaseUI.openWin('notice-detail', './notice-detail.html', {
+                noticeId : id
+            });
+        }
+
+        /**
+         *通过时间戳获取日期
+         */
+        function getTimeByTimeStamp(timeStamp) {
+            var now = new Date();
+            now.setTime(timeStamp * 1000);
+            return str = now.getFullYear() + "-" + fix((now.getMonth() + 1), 2) + "-" + fix(now.getDate(), 2) + "T" + fix(now.getHours(), 2) + ":" + fix(now.getMinutes(), 2);
+        }
+
+        function fix(num, length) {
+            return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
+        }
+
+        /**
+         *获取课程库列表
+         */
+        function getNoticeList() {
+            var configParams = {};
+            configParams.listBody = $('#list');
+            configParams.dotBody = dot;
+            configParams.emptyStr = '没有通知信息哎，赶快去创建吧！';
+            $httpUtils.initGetList('teacher/v1/noticeList', null, configParams);
+            changeTime();
+        }
+
+        function changeTime() {
+            $('.publishTime').each(function(i) {
+                if (this.attr("time")) {
+                    this.html(getTimeByTimeStamp(this.attr("time")));
+                    this.removeAttr("time");
+                }
+            });
+        }
+
+        /**
+         *编辑
+         */
+        function edit(id) {
+            $BaseUI.openWin('notice-edit', './notice-edit.html', {
+                noticeId : id
+            });
+            event.stopPropagation();
+        }
+
+
+        
+        $api.addEvt($api.byId('filter'), 'click', function() {
+            $api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+            $api.addCls($api.byId('titleArror'), 'aui-icon-down');
+            $BaseUI.actionSheet("请选择授课", ['全部授课', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)'], '取消', function(ret) {
+                $api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+                $api.addCls($api.byId('titleArror'), 'aui-icon-top');
+            });
+        });
+    </script>
+</html>

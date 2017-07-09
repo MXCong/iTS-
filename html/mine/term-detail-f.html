@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>学期详情</title>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<link rel="stylesheet" type="text/css" href="../../css/homework.css">
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/picker.min.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-range.js" ></script>
+		<style>
+		</style>
+	</head>
+	<body>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							学期名称
+						</div>
+						<input type="hidden" id="termId" />
+						<div class="aui-list-item-right" id="startYear">
+							XXXX
+						</div>
+						-
+						<div class="aui-list-item-right" id="endYear">
+							XXXX
+						</div>
+						学年第
+						<div class="aui-list-item-right" id="termNum">
+							X
+						</div>
+						学期
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							开始日期
+						</div>
+						<div class="aui-list-item-right" id="startDate">
+							09-01
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							学期周数
+						</div>
+						<div class="aui-list-item-right" id="weekCount">
+							8
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							结束日期
+						</div>
+						<div class="aui-list-item-right" id="endDate">
+							12-01
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							当前学期
+						</div>
+						<div class="aui-list-item-right">
+							<input disabled="" type="checkbox" class="aui-switch" id="checkBox">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item aui-list-item-middle">
+					<div class="aui-list-item-inner aui-list-item-arrow">
+						授课列表
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript">
+		var termId;
+		apiready = function() {
+			eventListener();
+			termId = api.pageParam.termId;
+			getTermDetail(termId);
+		};
+		function eventListener() {
+			api.addEventListener({
+				name : 'termEdit'
+			}, function(ret, err) {
+				getTermDetail(ret.value.termId);
+			});
+		}
+
+		//学期详细信息
+		function getTermDetail(termId) {
+			var params = {};
+			params.termId = termId;
+			$BaseUI.showPrgDlg();
+			$httpUtils.post('teacher/v1/termDetail', params, function(ret) {
+				//alert(JSON.stringify(ret));
+				if (ret) {
+					$api.text($api.byId("startYear"), ret.startYear);
+					$api.text($api.byId("endYear"), ret.endYear);
+					$api.text($api.byId("termNum"), ret.termNum);
+					$api.text($api.byId("startDate"), ret.startDate);
+					$api.text($api.byId("weekCount"), ret.weekCount);
+					$api.text($api.byId("endDate"), ret.endDate);
+					if (ret.isDefult == 1) {
+						//$('#checkBox').attr("checked", true);
+						$api.attr($api.byId("checkBox"), "checked", true);
+					} else {
+						//$api.attr($api.byId("checkBox"), "checked", false);
+						$api.byId("checkBox").checked = false;
+					}
+				}
+				$BaseUI.hidePrgDlg();
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//编辑按钮点击事件
+		$api.addEvt($api.byId('edit'), 'click', function() {
+			$BaseUI.openWin('term-edit', './term-edit.html', {
+				"termId" : termId
+			});
+		});
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
+</html>

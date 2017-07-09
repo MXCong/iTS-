@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/custom.css" />
+		<script src="../../script/api.js"></script>
+		<script src="../../script/aui/aui-pull-refresh.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>		
+		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+			<div class="aui-info-item">
+				<img src="../../image/xiuxi.png" style="width:1rem" class="aui-img-round" />
+				<span class="aui-margin-l-5">今天没有课程哦~ 休息一下吧</span>
+			</div>
+		</div>
+		<div class="aui-margin-l-15 aui-margin-r-15 aui-padded-b-10 sign-show">
+			<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+				<div class="aui-info-item" style="    width: 100%;">
+					<span class="aui-margin-l-15 sign-tips">要签到的授课：</span>
+					<span class="aui-margin-r-15 aui-font-size-12 sign-transform" onclick="selectCourse();">切换授课</span>
+				</div>
+			</div>
+			<!--当前正在上课 or 选择某门课程之后-->
+			<div class="class-sign">
+				<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+					<div class="aui-info-item">
+						<span class="aui-margin-l-15 sign-class">软件工程概论（13软件工程1班,13软件工程2班）</span>
+					</div>
+				</div>
+				<div class="sign-yzm">123456</div>
+			</div>
+			<!--没有课程被选择-->
+			<!--<div class="aui-text-center aui-font-size-12 aui-text-info aui-margin-t-15" onclick="selectCourse();">
+				选择课程
+			</div>-->
+			
+		</div>
+		<div class="aui-btn aui-btn-info aui-btn-block" style="margin: 20px auto; width:90%;">
+				开始签到
+		</div>
+		<div class="aui-margin-l-15 aui-margin-r-15 aui-padded-b-10">			
+			<p><strong>签到说明：</strong>学生端输入6位数字的签到码签到。</p>
+		</div>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+		};
+		
+		//选择、切换课程
+		function selectCourse(){
+			$BaseUI.openWin("attendance-course-select", "./attendance-course-select.html");
+		}
+		
+	</script>
+</html>

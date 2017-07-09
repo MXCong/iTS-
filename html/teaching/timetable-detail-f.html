@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>课表详情</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+    </head>
+    <body>
+        <div class="aui-content" id="content">
+
+        </div>
+    </body>
+    <script  id="tableTemplate" type="text/template">
+       {{~ it:data }}
+           <ul class="aui-list aui-list-in">
+                <li class="aui-list-header">
+                    课表单元
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            重复类型
+                        </div>
+                        <div class="aui-list-item-right">
+                            {{? data.repeatType === '0'}}
+                                                                                周重复
+                                                                                {{??}}
+                                                                                天重复
+                            {{? }}
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            开始日期
+                        </div>
+                        <div class="aui-list-item-right">
+                            {{=data.startDay}}
+                        </div>
+                    </div>
+                </li>
+                {{? data.repeatType === '0'}}
+                      <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                周数
+                            </div>
+                            <div class="aui-list-item-right">
+                                {{=data.weekCount}}
+                            </div>
+                        </div>
+                    </li>
+                {{??}}
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                开始日期
+                            </div>
+                            <div class="aui-list-item-right">
+                                {{=data.endDay}}
+                            </div>
+                        </div>
+                    </li>
+                {{? }}
+
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            重复间隔
+                        </div>
+                        <div class="aui-list-item-right">
+                         {{? data.repeatType === '0'}}
+                            {{? data.repeatNumber === '0'}}
+                                                                                每周
+                            {{??}}
+                                                                                        隔{{=data.repeatNumber}}周
+                            {{? }}
+                         {{??}}
+                            {{? data.repeatNumber === '0'}}
+                                                                                每天
+                            {{??}}
+                                                                                        隔{{=data.repeatNumber}}天
+                            {{? }}
+                         {{? }}
+                        </div>
+                    </div>
+                </li>
+                <div class="aui-content-padded-left">
+                        {{ for(var prop in data.timeCells) { }}
+                    <ul class="aui-list">
+                        <li class="aui-list-header">
+                            时间地点
+                        </li>
+                        {{? data.repeatType === '0'}}
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    星期
+                                </div>
+                                <div class="aui-list-item-right">
+                                    {{=data.timeCells[prop].weekDay}}
+                                </div>
+                            </div>
+                        </li>
+                         {{? }}
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    开始时间
+                                </div>
+                                <div class="aui-list-item-right">
+                                    {{=data.timeCells[prop].startTime}}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    结束时间
+                                </div>
+                                <div class="aui-list-item-right">
+                                    {{=data.timeCells[prop].endTime}}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    上课地点
+                                </div>
+                                <div class="aui-list-item-right">
+                                    {{=data.timeCells[prop].location}}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                        {{ } }}
+                </div>
+            </ul>
+             {{~}}
+    </script>
+    <script type="text/javascript">
+        var courseId = null;
+        var timeTableDot = doT.template($('#tableTemplate').html());
+        apiready = function() {
+            initBroadCast();
+            courseId = api.pageParam.courseId;
+            if(courseId){
+                $BaseUI.showPrgDlg('正在加载..');
+                getTimeTable();
+            }
+        };
+        /**
+         *注册课表变更通知
+         */
+        function initBroadCast(){
+            api.addEventListener({
+                name: 'timeTableChanged'
+            }, function(ret, err) {
+                getTimeTable();
+            });
+
+        }
+
+        /**
+         *获取课表详情
+         */
+        function getTimeTable(){
+            var params = {};
+            params.courseId = courseId;
+            $httpUtils.post('teacher/v1/getTimeTable',params,function(ret){
+                $BaseUI.hidePrgDlg();
+                if(ret && ret.length > 0){
+                    $('#content').html(timeTableDot(ret));
+                }else{
+                   var dialog = new auiDialog({})
+                   dialog.alert({
+                        title:"提示",
+                        msg:'此授课暂无课表，是否现在创建？',
+                        buttons:['取消','确定']
+                    },function(ret){
+                        console.log("ret:"+$api.jsonToStr(ret));
+                        if(ret.buttonIndex == 1){
+                            $BaseUI.closeWin();
+                        }else{
+                            $BaseUI.closeToWin('timetable-edit','./timetable-edit.html',{courseId:courseId});
+                        }
+                    });
+                }
+            },function(msg){
+                $BaseUI.hidePrgDlg();
+                if(msg){
+                    api.toast({
+                        msg:msg
+                    });
+                }
+            });
+        }
+        /**
+         *编辑课表
+         */
+        function doEdit(){
+            $BaseUI.openWin('timetable-edit','./timetable-edit.html',{courseId:courseId});
+        }
+    </script>
+</html>

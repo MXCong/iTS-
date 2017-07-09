@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>选择学校</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type='text/javascript' src='../../script/doT.min.js' charset='utf-8'></script>
+		<style>
+			body {
+			}
+			.aui-list.aui-list-in .aui-list-item {
+				margin-right: 0.75rem;
+				padding-left: 0.85rem;
+			}
+			.aui-list .aui-list-item-inner {
+				padding-right: 0rem;
+			}
+			.aui-list.aui-list-in .aui-list-item:last-child {
+				margin-left: 0.75rem;
+				padding-left: 0rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aui-searchbar" id="search">
+			<div class="aui-searchbar-input aui-border-radius" >
+				<i class="aui-iconfont aui-icon-search"></i>
+				<form action="doSearch();">
+					<input type="search" placeholder="请输入搜索内容" id="search-input">
+				</form>
+			</div>
+			<div class="aui-searchbar-cancel" tapmod>
+				取消
+			</div>
+		</div>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in" id="schoolDiv">
+				<script id="schoolTemplate" type="text/template">
+					{{~ it:data}}
+					<li class="aui-list-item" onclick="selectThis('{{= data.schoolId}}','{{= data.schoolName}}');">
+					<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">
+					{{= data.schoolName}}
+					</div>
+					</div>
+					</li>
+					{{~}}
+				</script>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var dot = doT.template($('#schoolTemplate').html());
+		apiready = function() {
+			getSchoolList();
+		};
+		function doSearch() {
+		}
+
+		//学校列表数据展示
+		function getSchoolList() {
+			$BaseUI.showPrgDlg();
+			$httpUtils.post("v1/getSchoolList", null, function(ret) {
+				if (ret) {
+					//alert(JSON.stringify(ret));
+					$('#schoolDiv').html(dot(ret));
+					$BaseUI.hidePrgDlg();
+					$BaseUI.hideHint();
+				}
+			}, function(err) {
+				$BaseUI.showHint();
+				$BaseUI.hidePrgDlg();
+				if (err) {
+					api.toast({
+						msg : err
+					});
+				}
+			});
+		}
+
+		//选择学校
+		function selectThis(schoolId, schoolName) {
+			//alert(schoolId+"==="+schoolName);
+			api.sendEvent({
+				name : 'schoolSelect',
+				extra : {
+					schoolId : schoolId,
+					schoolName : schoolName
+				}
+			});
+			$BaseUI.closeWin();
+		}
+
+
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
+</html>

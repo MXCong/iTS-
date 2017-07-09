@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>title</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <script type="text/javascript" src="../script/api.js"></script>
+        <script type="text/javascript" src="../script/utils/prefsUtils.js"></script>
+        <script type="text/javascript" src="../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../script/utils/configUtils.js"></script>
+        <script type="text/javascript" src="../script/aui/aui-tab.js"></script>
+        <style>
+            .aui-bar-tab { border-top:1px solid #e3e4e5;}
+            .aui-bar-tab .aui-bar-tab-label { font-size:0.5rem;}
+            
+            .aui-icon-home:before { content: "";}
+            .aui-icon-star:before { content: "";}
+            .aui-icon-cart:before { content: "";}
+            .aui-icon-my:before { content: "";}
+            .aui-bar-tab .aui-bar-tab-item .aui-iconfont {
+			    display: block;
+			    margin: 0 auto;
+			    width: 30px;
+			    height: 30px;
+			    border-radius: 50%;
+			    background: url(../image/home.png) no-repeat;
+			    background-position: 0 0;
+			    background-size: 120px;
+			}
+			.aui-bar-tab .aui-bar-tab-item .zhuye { background-position: 0 0;}
+			.aui-bar-tab .aui-bar-tab-item .shouke { background-position: -30px 0;}
+			.aui-bar-tab .aui-bar-tab-item .dayi { background-position: -60px 0;}
+			.aui-bar-tab .aui-bar-tab-item .my { background-position: -90px 0;}
+			
+			
+			.aui-bar-tab .aui-active .zhuye {background:url(../image/home-hover.png) no-repeat; background-size:100% 100%;}
+			.aui-bar-tab .aui-active .shouke {background:url(../image/sk-hover.png) no-repeat; background-size:100% 100%;}
+			.aui-bar-tab .aui-active .dayi {background:url(../image/dayi-hover.png) no-repeat; background-size:100% 100%;}
+			.aui-bar-tab .aui-active .my {background:url(../image/my-hover.png) no-repeat; background-size:100% 100%;}
+        </style>
+    </head>
+    <body>
+        <footer class="aui-bar aui-bar-tab" id="footer">
+            <div class="aui-bar-tab-item aui-active" tapmode>
+                <i class="aui-iconfont aui-icon-home zhuye"></i>
+                <div class="aui-bar-tab-label">
+                    主页
+                </div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode>
+                <i class="aui-iconfont aui-icon-star shouke"></i>
+                <div class="aui-bar-tab-label">
+                    授课
+                </div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode>
+                <i class="aui-iconfont aui-icon-cart dayi"></i>
+                <div class="aui-bar-tab-label">
+                    答疑
+                </div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode>
+                <i class="aui-iconfont aui-icon-my my"></i>
+                <div class="aui-bar-tab-label">
+                    我的
+                </div>
+            </div>
+        </footer>
+    </body>
+    <script type="text/javascript">
+        var frames = new Array();
+        apiready = function() {
+            api.parseTapmode();
+            funIniGroup();
+            $ConfigUtils.initTermConfig();
+        }
+        var tab = new auiTab({
+            element : document.getElementById("footer")
+        }, function(ret) {
+            api.setFrameGroupIndex({
+                name : 'group',
+                index : ret.index - 1
+            });
+            api.sendEvent({
+                name : 'mainSwitch',
+                extra : {
+                    index : ret.index
+                }
+            });
+        });
+        function funIniGroup() {
+            for (var i = 0; i < 4; i++) {
+                frames.push({
+                    name : 'frame' + i,
+                    url : '../html/frame' + i + '.html',
+                    bgColor : 'rgba(0,0,0,.2)',
+                    bounces : false
+                })
+            }
+            api.openFrameGroup({
+                name : 'group',
+                scrollEnabled : false,
+                preload : 3,
+                rect : {
+                    x : 0,
+                    y : 0,
+                    w : api.winWidth,
+                    h : api.winHeight - $api.byId('footer').offsetHeight
+                },
+                index : 0,
+                frames : frames
+            }, function(ret, err) {
+            
+            });
+        }
+    </script>
+</html>

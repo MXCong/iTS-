@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>课表编辑</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/picker.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div class="aui-content" id="content">
+            <ul class="aui-list aui-list-in courseBlock">
+                <li class="aui-list-header">
+                    课表单元 <i class="aui-iconfont aui-text-info" onclick="delTableBlock(this)">删除</i>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner" onclick="selectType(this);">
+                        <div class="aui-list-item-title">
+                            重复类型
+                        </div>
+                        <div class="aui-list-item-right repeatType" repeatType=0 >
+                            周重复
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            开始日期
+                        </div>
+                        <div class="aui-list-item-input inpmr">
+                            <input type="date" placeholder="请选择开始日期" value="2017-01-01" class="startDate"/>
+                        </div>
+                    </div>
+                </li>
+                <div class="content">
+                    <li class="aui-list-item" onclick="weekCountSelect(this);">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                重复周数
+                            </div>
+                            <div class="aui-list-item-right weekCount">
+                                点击选择重复周数
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item" onclick="weekRepeatSelect(this);">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                重复间隔
+                            </div>
+                            <div class="aui-list-item-right weekRepeat" weekRepeat = 1>
+                                每周
+                            </div>
+                        </div>
+                    </li>
+                    <div class="aui-content-padded-left">
+                        <ul class="aui-list timeBlock">
+                            <li class="aui-list-header">
+                                时间地点一<i class="aui-iconfont aui-text-info" onclick="delTimeBlock(this);">删除</i>
+                            </li>
+                            <li class="aui-list-item" onclick="weekSelect(this)">
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-title">
+                                        星期
+                                    </div>
+                                    <div class="aui-list-item-right week">
+                                        请选择星期
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="aui-list-item" onclick="startTimeSelect(this)">
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-title">
+                                        开始时间
+                                    </div>
+                                    <div class="aui-list-item-right startTime">
+                                         点击选择开始时间
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="aui-list-item" onclick="endTimeSelect(this)">
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-title">
+                                        结束时间
+                                    </div>
+                                    <div class="aui-list-item-right endTime">
+                                        点击选择结束时间
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="aui-list-item">
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-title">
+                                        上课地点
+                                    </div>
+                                    <input type="text" class="aui-list-item-right address" placeholder="请输入上课地点">
+
+                                    </input>
+                                </div>
+                            </li>
+                        </ul>
+                        <div onclick="addTimeBlock(this,0)" class="aui-btn aui-btn-add aui-btn-block aui-btn-outlined-dashed-top aui-btn-sm">
+                            +时间地点
+                        </div>
+
+                    </div>
+                </div>
+            </ul>
+
+                <div onclick="addTableBlock(this);" class="aui-btn aui-btn-add aui-btn-block aui-btn-outlined-solid-top aui-btn-sm">
+                    +授课单元
+                </div>
+
+        </div>
+    </body>
+
+    <script  id="tableTemplate" type="text/template">
+       {{~ it:data }}
+           <ul class="aui-list aui-list-in courseBlock">
+                <li class="aui-list-header">
+                    课表单元<i class="aui-iconfont aui-text-info" onclick="delTableBlock(this)">删除</i>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner"  onclick="selectType(this);">
+                        <div class="aui-list-item-title">
+                            重复类型
+                        </div>
+                        <div class="aui-list-item-right repeatType" repeatType = {{=data.repeatType}}>
+                            {{? data.repeatType === '0'}}
+                                                                                周重复
+                                                                                {{??}}
+                                                                                天重复
+                            {{? }}
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            开始日期
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input type="date" placeholder="请选择开始日期" value={{=data.startDay}} class="startDate"/>
+                        </div>
+                    </div>
+                </li>
+                <div class="content">
+                {{? data.repeatType === '0'}}
+                      <li class="aui-list-item" onclick="weekCountSelect(this);">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                重复周数
+                            </div>
+                            <div class="aui-list-item-right weekCount" weekCount={{=data.weekCount}}>
+                                {{=data.weekCount}}
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item" onclick="weekRepeatSelect(this);">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                重复间隔
+                            </div>
+                            <div class="aui-list-item-right weekRepeat" weekRepeat={{=data.repeatNumber}}>
+                                {{? data.repeatNumber === '0'}}
+                                                                                    每周
+                                {{??}}
+                                                                                            隔{{=data.repeatNumber}}周
+                                {{? }}
+                            </div>
+                        </div>
+                    </li>
+                {{??}}
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">
+                                结束日期
+                            </div>
+                            <div class="aui-list-item-input">
+                                <input type="date" placeholder="请选择结束日期" value={{=data.endDay}} class="endDate"/>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item" onclick="dayRepeatSelect(this);">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                重复间隔
+                            </div>
+                            <div class="aui-list-item-right dayRepeat" dayRepeat={{=data.repeatNumber}}>
+                                {{? data.repeatNumber === '0'}}
+                                                                                    每天
+                                {{??}}
+                                                                                            隔{{=data.repeatNumber}}天
+                                {{? }}
+                            </div>
+                        </div>
+                    </li>
+                {{? }}
+
+                <div class="aui-content-padded-left">
+                        {{ for(var prop in data.timeCells) { }}
+                    <ul class="aui-list timeBlock">
+                        <li class="aui-list-header">
+                            时间地点<i class="aui-iconfont aui-text-info" id="class" onclick="delTimeBlock(this);">删除</i>
+                        </li>
+                        {{? data.repeatType === '0'}}
+                        <li class="aui-list-item" onclick="weekSelect(this)">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    星期
+                                </div>
+                                <div class="aui-list-item-right week" week={{=data.timeCells[prop].weekDay}}>
+                                    {{=data.timeCells[prop].weekDay}}
+                                </div>
+                            </div>
+                        </li>
+                         {{? }}
+                        <li class="aui-list-item" onclick="startTimeSelect(this)">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    开始时间
+                                </div>
+                                <div class="aui-list-item-right startTime" startTime={{=data.timeCells[prop].startTime}}>
+                                    {{=data.timeCells[prop].startTime}}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item" onclick="endTimeSelect(this)">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    结束时间
+                                </div>
+                                <div class="aui-list-item-right endTime" endTime={{=data.timeCells[prop].endTime}}>
+                                    {{=data.timeCells[prop].endTime}}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="aui-list-item">
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-title">
+                                    上课地点
+                                </div>
+                                <input type="text" value={{=data.timeCells[prop].location}} class="aui-list-item-right address" placeholder="请输入上课地点">
+
+                                </input>
+                            </div>
+                        </li>
+                    </ul>
+                        {{ } }}
+                            <div onclick="addTimeBlock(this,0)" class="aui-btn aui-btn-add aui-btn-block aui-btn-outlined-dashed-top aui-btn-sm">
+                                +时间地点
+                            </div>
+                    </div>
+                </div>
+            </ul>
+             {{~}}
+                 <div onclick="addTableBlock(this);" class="aui-btn aui-btn-add aui-btn-block aui-btn-outlined-solid-top aui-btn-sm">
+                    +授课单元
+                </div>
+    </script>
+
+    <script type="text/javascript">
+        var startDate = null;
+        var endDate = null;
+        var weekCount = 0;
+        var courseId = null;
+        var timeTableDot = doT.template($('#tableTemplate').html());
+        var tableBlock = "            <ul class=\"aui-list aui-list-in courseBlock\">"+
+"                <li class=\"aui-list-header\">"+
+"                    课表单元 <i class=\"aui-iconfont aui-text-info\" onclick=\"delTableBlock(this)\">删除</i>"+
+"                </li>"+
+"                <li class=\"aui-list-item\">"+
+"                    <div class=\"aui-list-item-inner\" onclick=\"selectType(this);\">"+
+"                        <div class=\"aui-list-item-title\">"+
+"                            重复类型"+
+"                        </div>"+
+"                        <div class=\"aui-list-item-right repeatType\" repeatType=0 >"+
+"                            周重复"+
+"                        </div>"+
+"                    </div>"+
+"                </li>"+
+"                <li class=\"aui-list-item\">"+
+"                    <div class=\"aui-list-item-inner\">"+
+"                        <div class=\"aui-list-item-label\">"+
+"                            开始日期"+
+"                        </div>"+
+"                        <div class=\"aui-list-item-input\">"+
+"                            <input type=\"date\" placeholder=\"请选择开始日期\" value=\"2017-01-01\" class=\"startDate\"/>"+
+"                        </div>"+
+"                    </div>"+
+"                </li>"+
+"                <div class=\"content\">"+
+"                    <li class=\"aui-list-item\" onclick=\"weekCountSelect(this);\">"+
+"                        <div class=\"aui-list-item-inner\">"+
+"                            <div class=\"aui-list-item-title\">"+
+"                                重复周数"+
+"                            </div>"+
+"                            <div class=\"aui-list-item-right weekCount\">"+
+"                                点击选择重复周数"+
+"                            </div>"+
+"                        </div>"+
+"                    </li>"+
+"                    <li class=\"aui-list-item\" onclick=\"weekRepeatSelect(this);\">"+
+"                        <div class=\"aui-list-item-inner\">"+
+"                            <div class=\"aui-list-item-title\">"+
+"                                重复间隔"+
+"                            </div>"+
+"                            <div class=\"aui-list-item-right weekRepeat\" weekRepeat=1 >"+
+"                                每周"+
+"                            </div>"+
+"                        </div>"+
+"                    </li>"+
+"                    <div class=\"aui-content-padded-left\">"+
+"                        <ul class=\"aui-list timeBlock\">"+
+"                            <li class=\"aui-list-header\">"+
+"                                时间地点一<i class=\"aui-iconfont aui-text-info\" onclick=\"delTimeBlock(this);\">删除</i>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"weekSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        星期"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right week\">"+
+"                                        请选择星期"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"startTimeSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        开始时间"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right startTime\">"+
+"                                        点击选择开始时间"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"endTimeSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        结束时间"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right endTime\">"+
+"                                        点击选择结束时间"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        上课地点"+
+"                                    </div>"+
+"                   <input type=\"text\" class=\"aui-list-item-right address\" placeholder=\"请输入上课地点\">"+
+"                   </input>"+
+"                                </div>"+
+"                            </li>"+
+"                        </ul>"+
+"                            <div onclick=\"addTimeBlock(this,0)\" class=\"aui-btn aui-btn-add aui-btn-block aui-btn-outlined-dashed-top aui-btn-sm\">"+
+"                                +时间地点"+
+"                            </div>"+
+"                    </div>"+
+"            </ul>";
+        var weekBlock = "  <div class=\"content\">"+
+"                    <li class=\"aui-list-item\" onclick=\"weekCountSelect(this);\">"+
+"                        <div class=\"aui-list-item-inner\">"+
+"                            <div class=\"aui-list-item-title\">"+
+"                                重复周数"+
+"                            </div>"+
+"                            <div class=\"aui-list-item-right weekCount\">"+
+"                                点击选择重复周数"+
+"                            </div>"+
+"                        </div>"+
+"                    </li>"+
+"                    <li class=\"aui-list-item\" onclick=\"weekRepeatSelect(this);\">"+
+"                        <div class=\"aui-list-item-inner\">"+
+"                            <div class=\"aui-list-item-title\">"+
+"                                重复间隔"+
+"                            </div>"+
+"                            <div class=\"aui-list-item-right weekRepeat\" weekRepeat = 0>"+
+"                                每周"+
+"                            </div>"+
+"                        </div>"+
+"                    </li>"+
+"                    <div class=\"aui-content-padded-left\">"+
+"                        <ul class=\"aui-list timeBlock\">"+
+"                            <li class=\"aui-list-header\">"+
+"                                时间地点一<i class=\"aui-iconfont aui-text-info\" onclick=\"delTimeBlock(this);\">删除</i>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"weekSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        星期"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right week\">"+
+"                                        请选择星期"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"startTimeSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        开始时间"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right startTime\">"+
+"                                        点击选择开始时间"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"endTimeSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        结束时间"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right endTime\">"+
+"                                        点击选择结束时间"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        上课地点"+
+"                                    </div>"+
+"                   				<input type=\"text\" class=\"aui-list-item-right address\" placeholder=\"请输入上课地点\">"+
+"                   				</input>"+
+"                                </div>"+
+"                            </li>"+
+"                        </ul>"+
+"                            <div onclick=\"addTimeBlock(this,0)\" class=\"aui-btn aui-btn-add aui-btn-block aui-btn-outlined-dashed-top aui-btn-sm\">"+
+"                                +时间地点"+
+"                            </div>"+
+"                    </div>"+
+"                </div>";
+
+        var dayBlock = "<div class=\"content\">"+
+"                <li class=\"aui-list-item\">"+
+"                    <div class=\"aui-list-item-inner\">"+
+"                        <div class=\"aui-list-item-label\">"+
+"                            结束日期"+
+"                        </div>"+
+"                        <div class=\"aui-list-item-input\">"+
+"                            <input type=\"date\" placeholder=\"请选择结束日期\" value=\"2017-01-01\" class=\"endDate\"/>"+
+"                        </div>"+
+"                    </div>"+
+"                </li>"+
+"                <li class=\"aui-list-item\" onclick=\"dayRepeatSelect(this);\">"+
+"                    <div class=\"aui-list-item-inner\">"+
+"                        <div class=\"aui-list-item-title\">"+
+"                            重复间隔"+
+"                        </div>"+
+"                        <div class=\"aui-list-item-right dayRepeat\" dayRepeat=1>"+
+"                            每天"+
+"                        </div>"+
+"                    </div>"+
+"                </li>"+
+"                <div class=\"aui-content-padded-left\">"+
+"                    <ul class=\"aui-list timeBlock\">"+
+"                        <li class=\"aui-list-header\">"+
+"                            时间地点一<i class=\"aui-iconfont aui-text-info\" onclick=\"delTimeBlock(this);\">删除</i>"+
+"                        </li>"+
+"                        <li class=\"aui-list-item\" onclick=\"startTimeSelect(this)\">"+
+"                            <div class=\"aui-list-item-inner\">"+
+"                                <div class=\"aui-list-item-title\">"+
+"                                    开始时间"+
+"                                </div>"+
+"                                <div class=\"aui-list-item-right startTime\">"+
+"                                    点击选择开始时间"+
+"                                </div>"+
+"                            </div>"+
+"                        </li>"+
+"                        <li class=\"aui-list-item\" onclick=\"endTimeSelect(this)\">"+
+"                            <div class=\"aui-list-item-inner\">"+
+"                                <div class=\"aui-list-item-title\">"+
+"                                    结束时间"+
+"                                </div>"+
+"                                <div class=\"aui-list-item-right endTime\">"+
+"                                    点击选择结束时间"+
+"                                </div>"+
+"                            </div>"+
+"                        </li>"+
+"                        <li class=\"aui-list-item\">"+
+"                            <div class=\"aui-list-item-inner\">"+
+"                                <div class=\"aui-list-item-title\">"+
+"                                    上课地点"+
+"                                </div>"+
+"                   <input type=\"text\" class=\"aui-list-item-right address\" placeholder=\"请输入上课地点\">"+
+"                   </input>"+
+"                            </div>"+
+"                        </li>"+
+"                    </ul>"+
+"                    <div onclick=\"addTimeBlock(this,1);\" class=\"aui-btn aui-btn-add aui-btn-block aui-btn-outlined-dashed-top aui-btn-sm\">"+
+"                            +时间地点"+
+"                    </div>"+
+"                 </div>"+
+"             </div>";
+        var weekTimeBlock = "<ul class=\"aui-list timeBlock\">"+
+"                            <li class=\"aui-list-header\">"+
+"                                时间地点一<i class=\"aui-iconfont aui-text-info\" onclick=\"delTimeBlock(this);\">删除</i>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"weekSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        星期"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right week\">"+
+"                                        请选择星期"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"startTimeSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        开始时间"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right startTime\">"+
+"                                        点击选择开始时间"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\" onclick=\"endTimeSelect(this)\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        结束时间"+
+"                                    </div>"+
+"                                    <div class=\"aui-list-item-right endTime\">"+
+"                                        点击选择结束时间"+
+"                                    </div>"+
+"                                </div>"+
+"                            </li>"+
+"                            <li class=\"aui-list-item\">"+
+"                                <div class=\"aui-list-item-inner\">"+
+"                                    <div class=\"aui-list-item-title\">"+
+"                                        上课地点"+
+"                                    </div>"+
+"                   <input type=\"text\" class=\"aui-list-item-right address\" placeholder=\"请输入上课地点\">"+
+"                   </input>"+
+"                                </div>"+
+"                            </li>"+
+"                        </ul>";
+        var dayTimeBlock = "<ul class=\"aui-list timeBlock\">"+
+"                        <li class=\"aui-list-header\">"+
+"                            时间地点一<i class=\"aui-iconfont aui-text-info\" onclick=\"delTimeBlock(this);\">删除</i>"+
+"                        </li>"+
+"                        <li class=\"aui-list-item\" onclick=\"startTimeSelect(this)\">"+
+"                            <div class=\"aui-list-item-inner\">"+
+"                                <div class=\"aui-list-item-title\">"+
+"                                    开始时间"+
+"                                </div>"+
+"                                <div class=\"aui-list-item-right startTime\">"+
+"                                    点击选择开始时间"+
+"                                </div>"+
+"                            </div>"+
+"                        </li>"+
+"                        <li class=\"aui-list-item\" onclick=\"endTimeSelect(this)\">"+
+"                            <div class=\"aui-list-item-inner\">"+
+"                                <div class=\"aui-list-item-title\">"+
+"                                    结束时间"+
+"                                </div>"+
+"                                <div class=\"aui-list-item-right endTime\">"+
+"                                    点击选择结束时间"+
+"                                </div>"+
+"                            </div>"+
+"                        </li>"+
+"                        <li class=\"aui-list-item\">"+
+"                            <div class=\"aui-list-item-inner\">"+
+"                                <div class=\"aui-list-item-title\">"+
+"                                    上课地点"+
+"                                </div>"+
+"                   <input type=\"text\" class=\"aui-list-item-right address\" placeholder=\"请输入上课地点\">"+
+"                   </input>"+
+"                            </div>"+
+"                        </li>"+
+"                    </ul>";
+        apiready = function() {
+            var cTerm = $api.strToJson(($PrefsUtils.getPref('defultTerm')));
+            courseId = api.pageParam.courseId;
+            if (null != cTerm) {
+                startDate = cTerm.startDate;
+                endDate = cTerm.endDate;
+                weekCount = cTerm.weekCount;
+            }
+            if(courseId){
+                $BaseUI.showPrgDlg('正在加载..');
+                getTimeTable();
+            }
+        };
+
+            /**
+         *获取课表详情
+         */
+        function getTimeTable(){
+            var params = {};
+            params.courseId = courseId;
+            $httpUtils.post('teacher/v1/getTimeTable',params,function(ret){
+                $BaseUI.hidePrgDlg();
+                if(ret && ret.length > 0){
+                    $('#content').html(timeTableDot(ret));
+                }
+            },function(msg){
+                $BaseUI.hidePrgDlg();
+                if(msg){
+                    api.toast({
+                        msg:msg
+                    });
+                }
+            });
+        }
+
+      	function doSave() {
+            if(checkParams()){
+            	save();
+            }
+        }
+        /**
+         *检查数据是否合理
+         */
+        function checkParams(){
+        	try{
+        		$('.startDate').each(function(i){
+        			if(!$(this).val()){
+        				api.toast({
+	                        msg:'请完善开始日期！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.endDate').each(function(i){
+        			if(!$(this).val()){
+        				api.toast({
+	                        msg:'请完善结束日期！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.weekCount').each(function(i){
+        			if(!$(this).attr('weekCount')){
+        				api.toast({
+	                        msg:'请选择重复周数！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.weekRepeat').each(function(i){
+        			if(!$(this).attr('weekRepeat')){
+        				api.toast({
+	                        msg:'请选择间隔周数！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.dayRepeat').each(function(i){
+        			if(!$(this).attr('dayRepeat')){
+        				api.toast({
+	                        msg:'请选择间隔天数！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.week').each(function(i){
+        			if(!$(this).attr('week')){
+        				api.toast({
+	                        msg:'请选择具体上课星期！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.startTime').each(function(i){
+        			if(!$(this).attr('startTime')){
+        				api.toast({
+	                        msg:'请完善具体上课时间！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.endTime').each(function(i){
+        			if(!$(this).attr('endTime')){
+        				api.toast({
+	                        msg:'请完善具体下课时间！'
+                        });
+        				throw false;
+        			}
+        		});
+        		$('.address').each(function(i){
+        			if(!$(this).val()){
+        				api.toast({
+	                        msg:'请完善具体的上课地点！'
+                        });
+        				throw false;
+        			}
+        		});
+        		return true;
+        	}catch(e){
+        		return e;
+        	}
+        }
+        /**
+         *保存数据操作
+         */
+        function save(){
+            $BaseUI.showPrgDlg("正在保存..");
+        	var params = {};
+        	var timeItems = new Array();
+        	$('.courseBlock').each(function(i){
+        		var item = {};
+        		item.repeatType = $(this).find('.repeatType').attr('repeatType');
+        		item.startDay = $(this).find('.startDate').val();
+        		if(item.repeatType == 0){//周重复
+        			item.endDay = getSunday(item.startDay, $(this).find('.weekCount').attr('weekCount'));
+	        		item.repeatNumber = $(this).find('.weekRepeat').attr('weekRepeat');
+	        		item.weekCount = $(this).find('.weekCount').attr('weekCount');
+        		}else{//天重复
+        			item.endDay = $(this).find('.endDate').val();
+        			item.repeatNumber = $(this).find('.dayRepeat').attr('dayRepeat');
+        		}
+        		var timeCells = new Array();
+        		$(this).find('.timeBlock').each(function(i){
+        			var cell = {};
+        			cell.weekDay = $(this).find('.week').attr('week');
+        			cell.startTime = $(this).find('.startTime').attr('startTime');
+        			cell.endTime = $(this).find('.endTime').attr('endTime');
+        			cell.location = $(this).find('.address').val();
+        			timeCells.push(cell);
+        		});
+        		item.timeCells = timeCells;
+        		timeItems.push(item);
+        	});
+        	params.timeItems = timeItems;
+        	params.courseId = courseId;
+        	console.log($api.jsonToStr(params));
+        	$httpUtils.post('teacher/v1/andOrUpdateTimetable',params,function(ret){
+        	   $BaseUI.hidePrgDlg();
+        	   if(ret){
+                   api.sendEvent({
+	                   name:'timeTableChanged'
+                   });
+        	       var dialog = new auiDialog({});
+	               dialog.alert({
+                        title:"提示",
+                        msg:ret,
+                        buttons:['确定']
+                    },function(ret){
+                        $BaseUI.closeWin();
+                    });
+
+        	   }
+        	},function(msg){
+        	   $BaseUI.hidePrgDlg();
+        	   if(msg){
+        	       api.toast({
+	                   msg:msg
+                   });
+        	   }
+        	});
+        }
+
+
+        /**
+         *返回Nowdate所在周的第一天
+         */
+        function getWeekFirstDay(Nowdate) {
+            var WeekFirstDay = new Date(Nowdate - (Nowdate.getDay() - 1) * 86400000);
+            return WeekFirstDay;
+        }
+
+        /**
+         *获取 指定日期cDate，weeks周后的周日
+         */
+        function getSunday(cDate,weeks){
+            var  objDate;
+            objDate = new Date(cDate);
+            var weekFirstDay = getWeekFirstDay(objDate);
+            var objDate2 = new Date(weekFirstDay);
+            objDate2.setDate(weekFirstDay.getDate() + (weeks) * 7 -1);
+
+            var month = objDate2.getMonth() + 1;
+			var strDate = objDate2.getDate();
+           if (month >= 1 && month <= 9) {
+				month = "0" + month;
+			}
+			if (strDate >= 0 && strDate <= 9) {
+				strDate = "0" + strDate;
+			}
+            var times = objDate2.getFullYear() + "-" + month + "-" + strDate;
+
+            if (isBefore(endDate,times)) {
+                return endDate;
+            } else {
+                return times;
+            }
+        }
+
+        /**
+         *选择重复类型
+         */
+        function selectType(tag) {
+            var temp = $(tag).find(".repeatType").attr('repeatType');
+            var tempValue = $(tag).find(".repeatType").html();
+            var typeArr = new Array();
+            typeArr.push({
+                text : '周重复',
+                value : 0
+            });
+            typeArr.push({
+                text : '天重复',
+                value : 1
+            });
+            var typePicker = new Picker({
+                data : [typeArr],
+                title : '请选择年级'
+            });
+            typePicker.on('picker.select', function(selectedVal, selectedIndex) {
+                if (temp) {
+                    if (temp != selectedVal) {
+                        $BaseUI.confirm('提示', '您确定要改变该课表单元重复类型吗？改变后该单元将重新设置', '确定', '取消', function() {
+                            $(tag).find(".repeatType").html(typeArr[selectedIndex].text);
+                            $(tag).find(".repeatType").attr('repeatType', selectedVal);
+                            changeType($(tag).parent().parent(), selectedVal);
+                        }, function() {
+                        });
+                    }
+                } else {
+                    $(tag).find(".repeatType").html(typeArr[selectedIndex].text);
+                    $(tag).find(".repeatType").attr('repeatType', selectedVal);
+                    changeType($(tag).parent().parent(), selectedVal);
+                }
+            });
+            typePicker.show();
+        }
+
+        /**
+         *改变单元格类型
+         */
+        function changeType(tag, type) {
+            $(tag).find('.content').remove();
+            if(type == 0){
+                 $(tag).append(weekBlock);
+            }else{
+                 $(tag).append(dayBlock);
+            }
+        }
+
+        /**
+         *删除课表单元
+         */
+        function delTableBlock(tag) {
+            if ($(tag).parent().parent().parent().children().length == 2) {
+                return;
+            } else {
+                $(tag).parent().parent().remove();
+            }
+        }
+
+        /**
+         *添加课表单元
+         */
+        function addTableBlock(tag) {
+			$(tag).before(tableBlock);
+        }
+
+        /**
+         *删除时间地点单元
+         */
+        function delTimeBlock(tag) {
+            if ($(tag).parent().parent().parent().children().length == 2) {
+                return;
+            } else {
+                $(tag).parent().parent().remove();
+            }
+        }
+
+        /**
+         *添加时间地点单元
+         */
+        function addTimeBlock(tag,type) {
+            switch(type){
+                case 0:
+                    $(tag).before(weekTimeBlock);
+                break;
+                case 1:
+                    $(tag).before(dayTimeBlock);
+                break;
+            }
+        }
+
+        /**
+         *start是否在end前
+         */
+        function isBefore(start, end) {
+            var arrDate, objDate1, objDate2;
+            objDate1 = new Date(start);
+            objDate2 = new Date(end);
+            if ((objDate2 - objDate1) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+        /**
+         *重复周数选择
+         */
+        function weekCountSelect(tag) {
+            var weekCountArr = new Array();
+            for (var i = 1; i <= weekCount; i++) {
+                weekCountArr.push({
+                    text : i,
+                    value : i
+                });
+            }
+            var weekCountPicker = new Picker({
+                data : [weekCountArr],
+                title : '请选择持续周数'
+            });
+            weekCountPicker.on('picker.select', function(selectedVal, selectedIndex) {
+                $(tag).find(".weekCount").html(selectedVal);
+                $(tag).find(".weekCount").attr('weekCount', selectedVal);
+            });
+            weekCountPicker.show();
+        }
+
+        /**
+         *间隔周数选择
+         */
+        function weekRepeatSelect(tag) {
+            var weekRepeatArr = new Array();
+            weekRepeatArr.push({
+                text : '每周',
+                value : 1
+            });
+            for (var i = 2; i <= 14; i++) {
+                weekRepeatArr.push({
+                    text : '隔' + (i-1) + '周',
+                    value : i
+                });
+            }
+            var weekRepeatPicker = new Picker({
+                data : [weekRepeatArr],
+                title : '请选择间隔周数'
+            });
+            weekRepeatPicker.on('picker.select', function(selectedVal, selectedIndex) {
+                $(tag).find(".weekRepeat").html(weekRepeatArr[selectedIndex].text);
+                $(tag).find(".weekRepeat").attr('weekRepeat', selectedVal);
+            });
+            weekRepeatPicker.show();
+        }
+
+        /**
+         *间隔周数选择
+         */
+        function dayRepeatSelect(tag) {
+            var dayRepeatArr = new Array();
+            dayRepeatArr.push({
+                text : '每天',
+                value : 1
+            });
+            for (var i = 1; i <= 14; i++) {
+                dayRepeatArr.push({
+                    text : '隔' +(i-1) + '天',
+                    value : i
+                });
+            }
+            var dayRepeatPicker = new Picker({
+                data : [dayRepeatArr],
+                title : '请选择间隔天数'
+            });
+            dayRepeatPicker.on('picker.select', function(selectedVal, selectedIndex) {
+                $(tag).find(".dayRepeat").html(dayRepeatArr[selectedIndex].text);
+                $(tag).find(".dayRepeat").attr('dayRepeat', selectedVal);
+            });
+            dayRepeatPicker.show();
+        }
+
+        /**
+         *周数选择
+         */
+        function weekSelect(tag) {
+            var weekArr = new Array();
+            for (var i = 1; i <= 7; i++) {
+                weekArr.push({
+                    text : '周' + i,
+                    value : i
+                });
+            }
+            var weekPicker = new Picker({
+                data : [weekArr],
+                title : '请选择星期'
+            });
+            weekPicker.on('picker.select', function(selectedVal, selectedIndex) {
+                $(tag).find(".week").html(weekArr[selectedIndex].text);
+                $(tag).find(".week").attr('week', selectedVal);
+            });
+            weekPicker.show();
+        }
+
+        /**
+         *开始时间选择
+         */
+        function startTimeSelect(tag) {
+            var hourArr = new Array();
+            for (var i = 0; i < 24; i++) {
+                if (i < 10) {
+                    hourArr.push({
+                        text : '0' + i
+                    });
+                } else {
+                    hourArr.push({
+                        text : i
+                    });
+                }
+            }
+            var hourText = new Array();
+            hourText.push({
+                text : '时'
+            });
+            var minuteArr = new Array();
+            for (var i = 0; i < 60; i++) {
+                if (i < 10) {
+                    minuteArr.push({
+                        text : '0' + i
+                    });
+                } else {
+                    minuteArr.push({
+                        text : i
+                    });
+                }
+            }
+            var minuteText = new Array();
+            minuteText.push({
+                text : '分'
+            });
+            var startTimePicker = new Picker({
+                data : [hourArr, hourText, minuteArr, minuteText],
+                title : '请选择课程开始时间'
+            });
+            startTimePicker.on('picker.select', function(selectedVal, selectedIndex) {
+                $(tag).find(".startTime").html(hourArr[selectedIndex[0]].text + ':' + minuteArr[selectedIndex[2]].text);
+                $(tag).find(".startTime").attr('startTime', hourArr[selectedIndex[0]].text + ':' + minuteArr[selectedIndex[2]].text);
+            });
+            startTimePicker.show();
+        }
+
+        /**
+         *开始时间选择
+         */
+        function endTimeSelect(tag) {
+            var hourArr = new Array();
+            for (var i = 0; i < 24; i++) {
+                if (i < 10) {
+                    hourArr.push({
+                        text : '0' + i
+                    });
+                } else {
+                    hourArr.push({
+                        text : i
+                    });
+                }
+            }
+            var hourText = new Array();
+            hourText.push({
+                text : '时'
+            });
+            var minuteArr = new Array();
+            for (var i = 0; i < 60; i++) {
+                if (i < 10) {
+                    minuteArr.push({
+                        text : '0' + i
+                    });
+                } else {
+                    minuteArr.push({
+                        text : i
+                    });
+                }
+            }
+            var minuteText = new Array();
+            minuteText.push({
+                text : '分'
+            });
+            var endTimePicker = new Picker({
+                data : [hourArr, hourText, minuteArr, minuteText],
+                title : '请选择课程结束时间'
+            });
+            endTimePicker.on('picker.select', function(selectedVal, selectedIndex) {
+                $(tag).find(".endTime").html(hourArr[selectedIndex[0]].text + ':' + minuteArr[selectedIndex[2]].text);
+                $(tag).find(".endTime").attr('endTime', hourArr[selectedIndex[0]].text + ':' + minuteArr[selectedIndex[2]].text);
+            });
+            endTimePicker.show();
+        }
+    </script>
+</html>

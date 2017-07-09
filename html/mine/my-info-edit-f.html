@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>个人信息修改</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/homework.css">
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<style>
+			
+			.aui-list-item-arrow:before{
+				right:0.1rem;
+			}
+			.aui-list .aui-list-item-inner{
+				padding-right:0rem;
+			}
+			.aui-list-item .mr-75{
+				padding-right:0.75rem;
+			}
+			.aui-content .aui-list-item .aui-list-item-input{
+				color:#999;
+			}
+			.inpmr input[type="text"]{
+				color:#999;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item" onclick="selectIcon();">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							头像
+						</div>
+						<div class="aui-list-item-right">
+							<div class="aui-list-item-media" style="width: 3rem;">
+								<img id="icon" src="../../image/icon.png" class="aui-img-round" >
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label">
+							姓名
+						</div>
+						<div class="aui-list-item-input myinput">
+							<input id="name" type="text" placeholder="请输入姓名">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label">
+							教工号
+						</div>
+						<div class="aui-list-item-input myinput">
+							<input id="teacherNo" type="number" placeholder="请输入教工号">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label">
+							性别
+						</div>
+						<div class="aui-list-item-input myinput">
+							<label>
+								<input value="女" class="aui-radio" type="radio" name="sex">
+								女 </label>
+							<label>
+								<input value="男" class="aui-radio" type="radio" name="sex" checked>
+								男 </label>
+							
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" id="school">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75" id="school">
+						<div class="aui-list-item-title">
+							学校
+						</div>
+						<div class="aui-list-item-right" id="schoolName">
+							点击选择学校
+						</div>
+						<input type="hidden" id="schoolId" />
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label">
+							院系
+						</div>
+						<div class="aui-list-item-input myinput">
+							<input id="department" type="text" placeholder="请输入院系">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item" onclick="show('title')" >
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							职称
+						</div>
+						<div class="aui-list-item-right" id="title">
+							点击选择职称
+						</div>
+						<input type="hidden" id="titleId"/>
+					</div>
+				</li>
+				<li class="aui-list-item" onclick="show('post')">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							职务
+						</div>
+						<div class="aui-list-item-right" id="post">
+							点击选择职务
+						</div>
+						<input type="hidden" id="postId"/>
+					</div>
+				</li>
+				<li class="aui-list-item" id="email">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							邮箱
+						</div>
+						<div class="aui-list-item-right"></div>
+					</div>
+				</li>
+				<li class="aui-list-item" id="phone">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							电话
+						</div>
+						<div class="aui-list-item-right"></div>
+					</div>
+				</li>
+				<li class="aui-list-item" id="im">
+					<div class="aui-list-item-inner aui-list-item-arrow mr-75">
+						<div class="aui-list-item-title">
+							IM
+						</div>
+						<div class="aui-list-item-right"></div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+			getUserInfo();
+			eventListener();
+		};
+		
+		//监听器
+		function eventListener() {
+			//选择学校后返回数据
+			api.addEventListener({
+				name : 'schoolSelect'
+			}, function(ret, err) {
+				//alert(JSON.stringify(ret.value.schoolId));
+				$api.val($api.byId('schoolId'), ret.value.schoolId);
+				$api.text($api.byId('schoolName'), ret.value.schoolName);
+			});
+			//选择职称、职务后返回数据
+			api.addEventListener({
+	            name:'title-post'
+            },function(ret,err){
+            	//coding...
+            	if(ret.value.type == 4){
+            		$api.val($api.byId('title'), ret.value.name);
+					$api.text($api.byId('titleId'), ret.value.id);
+            	}else if(ret.value.type == 5){
+            		$api.val($api.byId('post'), ret.value.name);
+					$api.text($api.byId('postId'), ret.value.id);
+            	}
+            });
+		}
+
+		//选择头像
+		function selectIcon() {
+			$BaseUI.actionSheet('请选择类型', ['相机', '图库'], '取消', function(ret) {
+				sourceType = null;
+				switch(ret) {
+					case 1:
+						sourceType = 'camera';
+						break;
+					case 2:
+						sourceType = 'library';
+						break;
+				}
+				if (sourceType) {
+					api.getPicture({
+						sourceType : sourceType,
+						encodingType : 'jpg',
+						mediaValue : 'pic',
+						destinationType : 'url',
+						allowEdit : true,
+						quality : 50,
+						targetWidth : 1000,
+						targetHeight : 1000,
+						saveToPhotoAlbum : false
+					}, function(ret, err) {
+						if (ret.data) {
+							var filePath = ret.data;
+							$api.attr($api.byId('icon'), 'src', filePath);
+							$api.attr($api.byId('icon'), 'icon', filePath);
+						}
+					});
+				}
+			});
+		}
+
+		//获取个人信息
+		function getUserInfo() {
+			$BaseUI.showPrgDlg();
+			$httpUtils.post('teacher/v1/personInfo', null, function(ret) {
+				console.log($api.jsonToStr(ret));
+				if (ret) {
+					$BaseUI.hidePrgDlg();
+					$api.attr($api.byId('icon'), 'src', ret.picture);
+					$api.val($api.byId('name'), ret.name);
+					$api.val($api.byId('teacherNo'), ret.teacherNo);
+					$('input:radio[name="sex"]:checked').val(ret.sex);
+					$api.val($api.byId('department'), ret.department);
+					$api.text($api.byId('schoolName'), ret.schoolName);
+					$api.val($api.byId('schoolId'), ret.schoolId);
+					$api.val($api.byId('postId'), ret.postId);
+					$api.val($api.byId('titleId'), ret.zcId);
+					$api.text($api.byId('post'), ret.post);
+					$api.text($api.byId('title'), ret.zc);
+				}
+			}, function(msg) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//保存个人信息
+		function saveInfo() {
+			var name = $api.val($api.byId('name'));
+			var teacherNo = $api.val($api.byId('teacherNo'));
+			var schoolId = $api.val($api.byId('schoolId'));
+			if (!name) {
+				api.alert({
+					msg : "请问你是？？咋不输入姓名呢"
+				});
+				return;
+			}
+			if (name.length > 6) {
+				api.alert({
+					msg : "这个名字很洋气，就是字数有点多.."
+				});
+				return;
+			}
+			if (!teacherNo) {
+				api.alert({
+					msg : "请填写教工号！"
+				});
+				return;
+			}
+			if (!schoolId) {
+				api.alert({
+					msg : "啥学校的啊？"
+				});
+				return;
+			}
+			$BaseUI.showPrgDlg('正在加载...');
+			var info = {};
+			info.name = name;
+			info.teacherNo = teacherNo;
+			info.sex = $api.val($api.hasCls($api.domAll('aui-radio'), 'checked'));
+			info.schoolId = schoolId;
+			info.department = $api.val($api.byId('department'));
+			info.titleId = $api.val($api.byId('titleId'));
+			info.postId = $api.val($api.byId('postId'));
+			info.sex= $('input:radio[name="sex"]:checked').val();
+			if ($api.attr($api.byId('icon'), 'icon')) {
+				var iconPath = $api.attr($api.byId('icon'), 'icon');
+				info.files = {
+					icon : iconPath
+				};
+			}
+			$httpUtils.post('teacher/v1/editPersonInfo', info, function(ret) {
+				$BaseUI.hidePrgDlg();
+				$PrefsUtils.savePref('name', ret.name);
+				$PrefsUtils.savePref('icon', ret.icon);
+				api.toast({
+					msg : '保存成功'
+				});
+				api.sendEvent({
+					name : 'userInfoEdit'
+				});
+				$BaseUI.closeToWin('my-info', './my-info.html');
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//职称职务的编辑操作
+		function show(type) {
+			if (type == 'title') {
+				$BaseUI.openWin('titleList', './title-post.html', {
+					"type" : 4 , "title":"职称"
+				});
+			} else if (type == 'post') {
+				$BaseUI.openWin('titleList', './title-post.html', {
+					"type" : 5 , "title":"职务"
+				});
+			}
+		}
+		$api.addEvt($api.byId('school'), 'click', function() {
+			$BaseUI.openWin('school-select', './school-select.html');
+		});
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('email'), 'click', function() {
+			$BaseUI.openWin('email', './email.html');
+		});
+		$api.addEvt($api.byId('phone'), 'click', function() {
+			$BaseUI.openWin('phone', './phone.html');
+		});
+		$api.addEvt($api.byId('im'), 'click', function() {
+			$BaseUI.openWin('im', './im.html');
+		});
+	</script>
+</html>

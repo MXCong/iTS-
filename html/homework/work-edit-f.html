@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>创建作业</title>
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+
+    <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+    <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+
+	<style>
+		body{
+			background: #f5f5f5;
+		}
+		.label {
+                padding: 10px;
+            }
+            .exit {
+                width: auto;
+                height: 70px;
+                margin: 20px;
+            }
+            .score-area {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .content {
+                margin-top: 5px;
+            }
+            .icon {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .content .nbgimg{
+            	background-image:none;
+            }
+            .content .aui-badge{
+            	left:60%;
+            }
+            .content .aui-grid-label{
+            	font-size:0.6rem;
+            	color:#999;
+            }
+            .aui-list .aui-list-item-title{
+            	color:#333;
+            }
+            .aui-list .aui-list-item-right{
+            	color:#999;
+            	font-size:0.7rem;
+            }
+            input[type="text"]{
+            	height:1.2rem;
+            }
+
+        </style>
+</head>
+<body>
+	 <div class="content aui-content aui-margin-b-15">
+            <ul class="aui-list aui-media-list">
+                <li class="aui-list-item aui-list-item-middle nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    目标课程
+                                </div>
+                                <div class="aui-list-item-right">
+                                    点击选择目标课程
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                目标班级
+                            </div>
+                            <div class="aui-list-item-text">
+                                <div class="score-area" id="classList">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-input">
+                            <input class="nottle" type="text" placeholder="请输入作业标题">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-input">
+                            <textarea placeholder="请输入作业内容"></textarea>
+                        </div>
+                        <section class="aui-grid">
+                            <div class="aui-row">
+                                <div class="aui-col-xs-3">
+                                    <div class="aui-badge">
+                                         <img src="../../image/close.png">
+                                    </div>
+                                    <img class="icon" src="../../image/file-hw1.png"></img>
+                                    <div class="aui-grid-label">
+                                        170101.doc
+                                    </div>
+                                </div>
+                                <div class="aui-col-xs-3">
+                                    <div class="aui-badge">
+                                        <img src="../../image/close.png">
+                                    </div>
+                                    <img class="icon" src="../../image/file-hw2.png"></img>
+                                    <div class="aui-grid-label">
+                                        170101.jpg
+                                    </div>
+                                </div>
+                                <div class="aui-col-xs-3">
+                                    <div class="aui-badge">
+                                        <img src="../../image/close.png">
+                                    </div>
+                                    <img class="icon" src="../../image/file-hw3.png"></img>
+                                    <div class="aui-grid-label">
+                                        170101.rar
+                                    </div>
+                                </div>
+                                <div class="aui-col-xs-3">
+                                    <div class="aui-badge">
+                                        <img src="../../image/close.png">
+                                    </div>
+                                    <img class="icon" src="../../image/file-hw1.png"></img>
+                                    <div class="aui-grid-label">
+                                        170101.doc
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </section>
+                        <div class="aui-info-div">
+                            <div class="aui-info-item">
+                                <img src="../../image/img.png" style="width:1rem" class="aui-img" />
+                                <img src="../../image/file.png" style="width:1rem; margin-left: 0.8rem;" class="aui-img" />
+                            </div>
+                            <div class="aui-info-item">
+                                20/200
+                            </div>
+                        </div>
+                </li>
+                <li class="aui-list-item aui-list-item-middle top-5 ">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    发布时间
+                                </div>
+                                <div class="aui-list-item-right">
+                                    点击选择发布时间
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-list-item-middle">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    截止时间
+                                </div>
+                                <div class="aui-list-item-right">
+                                    点击选择截止时间
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-list-item-middle" id="result">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    作业答案
+                                </div>
+                                <div class="aui-list-item-right">
+                                    点击选择作业答案
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+    <script type="text/javascript">
+        apiready = function() {
+        };
+        $api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+        $api.addEvt($api.byId('result'), 'click', function() {
+            $BaseUI.openWin('work-result','./work-result.html');
+        });
+    </script>
+</html>

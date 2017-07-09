@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script src="../../script/utils/baseUI.js"></script>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"><span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title" id="filter">
+				软件工程<span class="aui-iconfont aui-icon-top" id="titleArror"></span>
+			</div>
+		</header>
+		
+	</body>
+	<script type="text/javascript">
+        apiready = function() {
+        	$BaseUI.openFrame('knowledge-point-list-frame', 'knowledge-point-list-frame.html');
+        };
+        $api.addEvt($api.byId('edit'), 'click', function() {
+            $BaseUI.openWin('history-attendance', './history-attendance.html');
+        });
+       	$api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+        
+        //授课选择
+		$api.addEvt($api.byId('filter'), 'click', function() {
+			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+			$api.addCls($api.byId('titleArror'), 'aui-icon-down');
+			$BaseUI.actionSheet("请选择分类", ['软件工程', '软件工程', '软件工程', '软件工程编译原理', '数据结构'], '取消', function(ret) {
+				$api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+				$api.addCls($api.byId('titleArror'), 'aui-icon-top');
+			});
+		});
+    </script>
+	
+</html>

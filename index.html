@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>Hello APP</title>
+        <link rel="stylesheet" type="text/css" href="./css/api.css">
+        <style>
+            html, body {
+                height: 100%;
+                background-color: #DDDDDD;
+            }
+            .header {
+                height: 50px;
+                background-color: #f00;
+            }
+        </style>
+        <script type="text/javascript" src="./script/api.js"></script>
+        <script type="text/javascript" src="./script/utils/md5.js"></script>
+        <script type="text/javascript" src="./script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="./script/utils/prefsUtils.js"></script>
+        <script type="text/javascript" src="./script/http/httpUtils.js"></script>
+        <script type="text/javascript">
+            apiready = function() {
+                fnOpenWelcome();
+            };
+            function fnOpenWelcome() {
+                var showWelcome = $PrefsUtils.getPref('showWelcome')
+                if (showWelcome && showWelcome == 'false') {
+                    var userId = $PrefsUtils.getPref('userId');
+                    var token = $PrefsUtils.getPref('token');
+                    var schoolId = $PrefsUtils.getPref('schoolId');
+                    if (userId && token && schoolId) {
+                            $BaseUI.openWin('main', './html/main.html');
+                    } else {
+                        $BaseUI.openWin('login', './html/login/login.html');
+                    }
+                } else {
+                    $BaseUI.openWin('welcome', './html/welcome.html');
+                }
+            };
+        </script>
+    </head>
+    <body></body>
+</html>

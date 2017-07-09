@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>职称</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+		<style>
+			.aui-list .aui-list-header {
+				background: #F5F5F5;
+				font-size: 0.7rem;
+				color: #999;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				职称
+			</div>
+			<a class="aui-pull-right aui-btn" id="edit">新增 </a>
+		</header>
+		<div class="aui-content">
+			<ul class="aui-list aui-list-in" id="system">
+				<li class="aui-list-header">
+					默认
+				</li>
+			</ul>
+			<ul class="aui-list aui-list-in" id="custom">
+				<li class="aui-list-header">
+					自定义
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script id="systemTemplate" type="text/template">
+		{{~ it:data }}
+		<li class="aui-list-item" onclick="select('{{=data.dId}}','{{=data.dName}}')">
+		<div class="aui-list-item-inner">
+		<div class="aui-list-item-title">
+		{{=data.dName}}
+		</div>
+		</div>
+		</li>
+		{{~}}
+	</script>
+	<script id="customTemplate" type="text/template">
+		{{~ it:data }}
+		<li class="aui-list-item" onclick="select('{{=data.dId}}','{{=data.dName}}')">
+		<div class="aui-list-item-inner">
+		<div class="aui-list-item-title">
+		{{=data.dName}}
+		</div>
+		<div class="aui-list-item-right">
+		<div class="aui-label aui-label-danger" onclick="confirm(this,'{{=data.dId}}');">
+		删除
+		</div>
+		</div>
+		</div>
+		</li>
+		{{~}}
+	</script>
+	<script type="text/javascript">
+		var type = null;
+		var title = null;
+		var systemDot = doT.template($('#systemTemplate').html());
+		var customDot = doT.template($('#customTemplate').html());
+		var dialog = new auiDialog();
+		apiready = function() {
+			type = api.pageParam.type;
+			title = api.pageParam.title;
+			$('.aui-title').html(title);
+			$BaseUI.showPrgDlg();
+			getDatas();
+		};
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('edit'), 'click', function() {
+			dialog.prompt({
+				title : "请输入自定义",
+				text : '请输入内容',
+				type : 'text',
+				buttons : ['取消', '确定']
+			}, function(ret) {
+				if (ret.buttonIndex == 2) {
+					if (ret.text.length > 20) {
+						api.toast({
+							msg : '内容长度最长为20'
+						});
+					} else {
+						save(ret.text);
+					}
+				}
+			})
+		});
+		/**
+		 *获取字典数据
+		 */
+		function getDatas() {
+			var params = {};
+			params.typeId = type;
+			$httpUtils.post('teacher/v1/getDictionary', params, function(ret) {
+				$BaseUI.hidePrgDlg();
+				if (ret) {
+					$('.aui-list-item').remove();
+					if (ret.custom) {
+						$('#custom').append(customDot(ret.custom));
+					}
+					if (ret.system) {
+						$('#system').append(systemDot(ret.system));
+					}
+				}
+			}, function(msg) {
+				$BaseUI.hidePrgDlg();
+				$BaseUI.showHint($('.aui-content'), null, msg, function() {
+					$BaseUI.showPrgDlg();
+					getDatas();
+					$BaseUI.hideHint();
+				});
+			});
+		}
+
+		/**
+		 *自定义数据
+		 */
+		function save(content) {
+			var params = {};
+			params.content = content;
+			params.typeId = type;
+			$httpUtils.post('teacher/v1/addDictionary', params, function(ret) {
+				if (ret) {
+					if (ret) {
+						api.toast({
+							msg : ret
+						});
+					}
+					$BaseUI.showPrgDlg();
+					getDatas();
+				}
+			}, function(msg) {
+				if (msg) {
+					api.toast({
+						msg : msg
+					});
+				}
+			});
+		}
+
+		/**
+		 *删除提示
+		 */
+		function confirm(tag, dId) {
+			$BaseUI.confirm("提示", "您确定要删除该条数据？", "确定", "取消", function() {
+				del(tag, dId);
+			}, function() {
+			});
+		}
+
+		/**
+		 *删除数据
+		 */
+		function del(tag, dId) {
+			$BaseUI.showPrgDlg('正在删除..');
+			var params = {};
+			params.dId = dId;
+			$httpUtils.post('teacher/v1/deleteDictionary', params, function(ret) {
+				$BaseUI.hidePrgDlg();
+				if (ret) {
+					api.toast({
+						msg : ret
+					});
+				}
+				$(tag).parent().parent().parent().remove();
+			}, function(msg) {
+				$BaseUI.hidePrgDlg();
+				if (msg) {
+					api.toast({
+						msg : msg
+					});
+				}
+			});
+		}
+
+		/**
+		 *选中某行
+		 */
+		function select(id, name) {
+			api.sendEvent({
+				name : 'title-post',
+				extra : {
+					type : type,
+					dId : id,
+					dName : name
+				}
+			});
+			$BaseUI.closeWin();
+		}
+	</script>
+</html>

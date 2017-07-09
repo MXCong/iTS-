@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>课程库管理</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/homework.css">
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-list-swipe.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script src="../../script/aui/aui-pull-refresh.js"></script>
+		<style>
+			.aui-list-item-inner.aui-swipe-handle {
+				overflow-x: hidden;
+				position: relative;
+				z-index: 1;
+				background-color: #ffffff;
+			}
+			.aui-swipe-btn {
+				position: absolute;
+				right: 0;
+				z-index: 0;
+				height: 100%;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-flex: 1;
+				-webkit-box-pack: justify;
+				-webkit-justify-content: space-between;
+				justify-content: space-between;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			.aui-swipe-btn .aui-btn {
+				border-radius: 0;
+				height: 100%;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			.donghua {
+				-webkit-transition-duration: 300ms;
+				transition-duration: 300ms;
+			}
+			.aui-list .aui-list-item {
+				border-bottom: 1px solid #ddd;
+				margin: 0 0.75rem;
+				padding-left:0rem;
+			}
+			.aui-list-item-arrow:before {
+				right: 0.1rem;
+			}
+		</style>
+	</head>
+	<body class="aui-refresh-content">
+		<div class="aui-content aui-margin-b-15 aui-margin-t-10">
+			<ul class="aui-list" id="list"></ul>
+		</div>
+	</body>
+	<script id="courseTemplate" type="text/template">
+		{{~ it:data }}
+		<li class="aui-list-item" onclick="courseDetail('{{=data.id}}','{{=data.name}}');"><!---->
+		<div class="aui-list-item-inner aui-swipe-handle aui-list-item-arrow" >
+		<div class="aui-list-item-title">
+		{{=data.name}}
+		</div>
+		</div>
+		<div class="aui-swipe-btn">
+		<div class="aui-btn aui-btn-info" onclick="edit('{{=data.id}}','{{=data.name}}')">
+		编辑
+		</div>
+		<div class="aui-btn aui-btn-danger" onclick="delCourse(this,'{{=data.id}}')">
+		删除
+		</div>
+		</div>
+		</li>
+		{{~}}
+	</script>
+	<script type="text/javascript">
+		apiready = function() {
+			var dot = doT.template($('#courseTemplate').html());
+			$BaseUI.showPrgDlg();
+			getCourseList(dot);
+			api.addEventListener({
+				name : 'courseChanged'
+			}, function(ret, err) {
+				getCourseList(dot);
+			});
+		};
+		var swipe = new auiListSwipe(function(ret) {
+		});
+		/**
+		 *查看学期详情
+		 */
+		function courseDetail(id, name) {
+			var param = {};
+			param.courseId = id;
+			param.courseName = name;
+			$BaseUI.openWin('course-detail', './course-detail.html', param);
+		}
+
+		/**
+		 *编辑课程信息
+		 */
+		function edit(id, name) {
+			var param = {};
+			param.courseId = id;
+			param.courseName = name;
+			$BaseUI.openWin('course-edit', './course-edit.html', param);
+			event.stopPropagation();
+		}
+
+		/**
+		 *删除课程信息
+		 */
+		function delCourse(tag, id) {
+			$BaseUI.showPrgDlg();
+			var params = {};
+			params.courseId = id;
+			$httpUtils.post('v1/deleteCourse', params, function(ret) {
+				$BaseUI.hidePrgDlg();
+				$(tag).parent().parent().remove();
+			}, function(msg) {
+				$BaseUI.hidePrgDlg();
+				if (msg) {
+					api.toast({
+						msg : msg
+					});
+				}
+			});
+			event.stopPropagation();
+		}
+
+		/**
+		 *获取课程库列表
+		 */
+		function getCourseList(d) {
+			var configParams = {};
+			configParams.listBody = $('#list');
+			configParams.dotBody = d;
+			configParams.emptyStr = '没有课程信息哎，赶快去创建吧！';
+			$httpUtils.initGetList('v1/getcourseLib', null, configParams);
+		}
+	</script>
+</html>

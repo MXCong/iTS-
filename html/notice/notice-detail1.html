@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>通知详情</title>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <style>
+            .label {
+                padding: 10px;
+            }
+            .exit {
+                width: auto;
+                height: 70px;
+                margin: 20px;
+            }
+            .score-area {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .exit {
+                width: auto;
+                height: 70px;
+                margin: 20px;
+            }
+            .icon {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                通知详情
+            </div>
+            <a class="aui-pull-right aui-btn" id="edit"> 编辑 </a>
+        </header>
+        <div class="aui-content">
+            <ul class="aui-list aui-media-list">
+                <li class="aui-list-item aui-list-item nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    目标课程
+                                </div>
+                                <div class="aui-list-item-right" id="courseName">
+                                    软件工程
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title">
+                                目标班级
+                            </div>
+                            <div class="aui-list-item-text">
+                                <div class="score-area" id="classList">
+              
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-list-item top-5 nbgimg">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    通知标题
+                                </div>
+                                <div class="aui-list-item-right" id="title">
+                                    今天课程取消
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item top-5 nbgimg">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-input">
+                            <textarea id="content" readonly placeholder="请输入通知内容"></textarea>
+                        </div>
+                        <section class="aui-grid">
+                            <div class="aui-row" id="fileList">
+                            	<div class="aui-row">
+                                <div class="aui-col-xs-3">
+                                    <img class="icon" src="../../image/file-hw1.png"></img>
+                                    <div class="aui-grid-label">
+                                        201701.doc
+                                    </div>
+                                </div>
+                                <div class="aui-col-xs-3">
+                                    <img class="icon" src="../../image/file-hw2.png"></img>
+                                    <div class="aui-grid-label">
+                                        201702.rar
+                                    </div>
+                                </div>
+                                <div class="aui-col-xs-3">
+                                    <img class="icon" src="../../image/file-hw3.png"></img>
+                                    <div class="aui-grid-label">
+                                        201702.jpg
+                                    </div>
+                                </div>
+                                <div class="aui-col-xs-3">
+                                    <img class="icon" src="../../image/file-hw2.png"></img>
+                                    <div class="aui-grid-label">
+                                        201702.rar
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            </div>
+                        </section>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-list-item top-5">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title">
+                                    发布时间
+                                </div>
+                                <div class="aui-list-item-right" id="publishTime">
+                                    2017-01-01 00：00
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-list-item-middle " id="status">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            阅读情况
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="exit">
+                <div class="aui-btn aui-btn-danger aui-btn-block">
+                    删除通知
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    <script id="fileTemplate" type="text/template">
+        {{~ it:data }}
+        <div class="aui-col-xs-2">
+        <img class="icon remoteFile" fileId={{=data.fileId}} src={{=data.filePath}} onerror="this.src='../../image/scwj.jpg'"></img>
+        <div class="aui-grid-label">
+        {{=data.fileName}}
+        </div>
+        </div>
+        {{~}}
+    </script>
+    
+    <script type="text/javascript">
+        var noticeId = null;
+        var filedot = doT.template($('#fileTemplate').html());
+        apiready = function() {
+            noticeId = api.pageParam.noticeId;
+            if(noticeId){
+                getNoticeDetail(noticeId);
+            }else{
+                $BaseUI.closeWin();
+            }
+        };
+        /**
+         *获取通知详情 
+         */
+        function getNoticeDetail(id){
+            $BaseUI.showPrgDlg();
+            var params = {};
+            params.noticeId = noticeId;
+            $httpUtils.post('teacher/v1/noticeDetail',params,function(ret){
+                $BaseUI.hidePrgDlg();
+                if(ret){
+                    $('#courseName').html(ret.teachingName);
+                    $('#title').html(ret.title);
+                    $('#content').html(ret.content);
+                    if(ret.classes){
+                        var classStr = "";
+                        for(var i = 0;i < ret.classes.length;i++){
+                            classStr +="["+ ret.classes[i].className+"]";
+                        }
+                        $('#classList').html(classStr);
+                    }
+                    var timestamp = ret.publishTime;
+                    var newDate = new Date();
+                    newDate.setTime(timestamp * 1000);
+                    var dateStr = newDate.getFullYear()+"-"+(newDate.getMonth() + 1)+"-"+newDate.getDate()+" "+newDate.getHours()+":"+newDate.getMinutes();
+                    $('#publishTime').html(dateStr);
+                    if(ret.files && ret.files.length > 0){
+                        $('#fileList').html(filedot(ret.files));
+                    }
+                    var height = $(".icon").width();
+                    $(".icon").css("height", height);
+                }else{
+                    $BaseUI.closeWin();
+                }
+            },function(msg){
+                $BaseUI.hidePrgDlg();
+                if(msg){
+                    alert(msg);
+                }
+                $BaseUI.closeWin();
+            });
+        }
+        $api.addEvt($api.byId('back'), 'click', function(){
+            $BaseUI.closeWin();
+        });
+        $api.addEvt($api.byId('edit'), 'click', function(){
+            $BaseUI.closeToWin('notice-edit','./notice-edit.html',{noticeId:noticeId});
+        });
+        $api.addEvt($api.byId('status'), 'click', function(){
+            $BaseUI.openWin('read-status','./read-status.html');
+        });
+    </script>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>授课详情</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+        <script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+        <style>
+            .label {
+                padding: 10px;
+            }
+            .exit {
+                width: auto;
+                height: 70px;
+                margin: 20px;
+            }
+            .score-area {
+                padding: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="aui-content">
+            <ul class="aui-list aui-list-in">
+                <li class="aui-list-header">
+                    基本信息
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            所属课程
+                        </div>
+                        <div class="aui-list-item-right" id="courseLibName"></div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            授课名称
+                        </div>
+                        <div class="aui-list-item-right" id="courseName"></div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            考核方式
+                        </div>
+                        <div class="aui-list-item-right" id="examMethodName"></div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">
+                            授课方式
+                        </div>
+                        <div class="aui-list-item-right" id="teachingMethodName"></div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-list-item-middle" id="timetable">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        课程课表
+                    </div>
+                </li>
+                <li class="aui-list-header">
+                    授课资料
+                </li>
+                <li class="aui-list-item aui-list-item-middle" id="teachingRes">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        授课资源
+                </li>
+                <li class="aui-list-item aui-list-item-middle">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        课程题库
+                </li>
+                <li class="aui-list-item aui-list-item-middle">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        课程通知
+                </li>
+                <li class="aui-list-item aui-list-item-middle">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        课程作业
+                </li>
+                <li class="aui-list-header" id="classList">
+                    授课班级
+                </li>
+                <li class="aui-list-header">
+                    成绩组成
+                </li>
+                <li >
+                    <div class="score-area" id="scoreList"></div>
+                </li>
+            </ul>
+            <div class="exit">
+                <div class="aui-btn aui-btn-danger aui-btn-block">
+                    删除授课
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 班级组成模板 -->
+    <script id="classTemplate" type="text/template">
+        {{~ it:data }}
+        <li class="aui-list-item classItem" grade={{=data.grade}} majorId={{=data.majorId}} className={{=data.className}} classType={{=data.classType}}>
+        <div class="aui-list-item-inner">
+        <div class="aui-list-item-title">
+        <span>{{=data.className}}</span>
+        </div>
+        <div class="aui-list-item-right">
+        </div>
+        </div>
+        </li>
+        {{~}}
+    </script>
+    <!-- 成绩组成模板 -->
+    <script id="scoreTemplate" type="text/template">
+        {{~ it:data }}
+        <div class="label aui-label scoreItem aui-label-info" sType={{=data.recordType}}  >
+        {{=data.scoreName}}
+        </div>
+        {{~}}
+    </script>
+    <script type="text/javascript">
+        var courseId = null;
+        var classDot = doT.template($('#classTemplate').html());
+        var scoreDot = doT.template($('#scoreTemplate').html());
+        apiready = function() {
+            initBroadCast();
+            courseId = api.pageParam.courseId;
+            if (courseId) {
+                $BaseUI.showPrgDlg('正在加载..');
+                getTeachingDetail();
+            }
+        };
+        /**
+         *初始化授课修改事件
+         */
+        function initBroadCast() {
+            api.addEventListener({
+                name : 'teachingChanged'
+            }, function(ret, err) {
+                getTeachingDetail();
+            });
+        }
+
+        /**
+         *获取授课详情
+         */
+        function getTeachingDetail() {
+            var params = {};
+            params.courseId = courseId;
+            $httpUtils.post('teacher/v1/teachingDetail', params, function(ret) {
+                $BaseUI.hidePrgDlg();
+                if (ret) {
+                    $('#courseLibName').html(ret.courseLibName);
+                    $('#courseName').html(ret.courseName);
+                    $('#examMethodName').html(ret.examMethodName);
+                    $('#teachingMethodName').html(ret.teachingMethodName);
+                    $('#classList').after(classDot(ret.classes));
+                    $('#scoreList').html(scoreDot(ret.scores));
+                }
+            }, function(msg) {
+                $BaseUI.hidePrgDlg();
+                if (msg) {
+                    api.toast({
+                        msg : msg
+                    });
+                }
+            });
+        }
+
+
+        $api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+        /**
+         *编辑
+         */
+        function edit(){
+            $BaseUI.openWin('teaching-edit', './teaching-edit.html', {
+                courseId : courseId
+            });
+        }
+
+        $api.addEvt($api.byId('timetable'), 'click', function() {
+            $BaseUI.openWin('timetable-detail', './timetable-detail.html', {
+                courseId : courseId
+            });
+        });
+        $api.addEvt($api.byId('teachingRes'), 'click', function() {
+            $BaseUI.openWin('teaching-res', './teaching-res.html');
+        });
+    </script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>答疑</title>
+        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <script type="text/javascript" src="../script/api.js"></script>
+        <script type="text/javascript" src="../script/aui/aui-tab.js"></script>
+        <style>
+            body {
+            }
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav aui-margin-b-15" id="header">
+            <div class="aui-title">
+                <div class="aui-bar aui-bar-btn aui-bar-btn-round">
+                    <div class="aui-bar-btn-item aui-active">
+                        消息
+                    </div>
+                    <div class="aui-bar-btn-item">
+                        学生
+                    </div>
+                </div>
+            </div>
+        </header>
+    </body>
+    <script type="text/javascript">
+        var frames = new Array();
+        apiready = function() {
+            api.parseTapmode();
+            funIniGroup();
+            initBroadCast();
+        }
+        /**
+         *初始化广播
+         */
+        function initBroadCast() {
+            api.addEventListener({
+                name : 'mainSwitch'
+            }, function(ret, err) {
+                if (ret.value.index == 3) {
+                    console.log('ret:'+$api.jsonToStr(ret));
+                    api.setFrameGroupAttr({
+                        name : 'msggroup',
+                        hidden : false
+                    });
+                } else {
+                    api.setFrameGroupAttr({
+                        name : 'msggroup',
+                        hidden : true
+                    });
+                }
+            });
+        }
+
+        var bar = document.querySelectorAll(".aui-bar-btn");
+        if (bar) {
+            for (var i = 0; i < bar.length; i++) {
+                var d = bar[i];
+                var tab = new auiTab({
+                    element : bar[i],
+                    repeatClick : false
+                }, function(ret) {
+                    api.setFrameGroupIndex({
+                        name : 'msggroup',
+                        index : ret.index - 1
+                    });
+                });
+            }
+        }
+        function funIniGroup() {
+            frames.push({
+                name : 'msg-list',
+                url : './qa/msg-list.html',
+                bgColor : 'rgba(0,0,0,.2)',
+                bounces : false
+            });
+            frames.push({
+                name : 'contacts',
+                url : './qa/contacts.html',
+                bgColor : 'rgba(0,0,0,.2)',
+                bounces : false
+            });
+            api.openFrameGroup({
+                name : 'msggroup',
+                scrollEnabled : false,
+                preload : 3,
+                rect : {
+                    x : 0,
+                    y : $api.byId('header').offsetHeight,
+                    w : api.winWidth,
+                    h : api.winHeight - $api.byId('header').offsetHeight -45
+                },
+                index : 0,
+                frames : frames
+            }, function(ret, err) {
+            });
+            api.setFrameGroupAttr({
+                name : 'msggroup',
+                hidden : true
+            });
+        }
+    </script>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>通知列表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-pull-refresh.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-list-swipe.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+	</head>
+	<style>
+		.ml-5 {
+			margin-left: 5px;
+		}
+	</style>
+	<header class="aui-bar aui-bar-nav">
+		<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+		<div class="aui-title" id="filter">
+			全部授课<span class="aui-iconfont aui-icon-top ml-5" id="titleArror"></span>
+		</div>
+		<a class="aui-pull-right aui-btn" id="edit"> 新增 </a>
+	</header>
+	<script type="text/javascript">
+		apiready = function() {
+			$BaseUI.openFrame('notice-list-f', 'notice-list-f.html');
+		}
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('edit'), 'click', function() {
+			$BaseUI.openWin('notice-edit', './notice-edit.html');
+		});
+		$api.addEvt($api.byId('filter'), 'click', function() {
+			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');
+			$api.addCls($api.byId('titleArror'), 'aui-icon-down');
+			$BaseUI.actionSheet("请选择授课", ['全部授课', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)', '软件工程(2013级软件工程1班)'], '取消', function(ret) {
+				$api.removeCls($api.byId('titleArror'), 'aui-icon-down');
+				$api.addCls($api.byId('titleArror'), 'aui-icon-top');
+			});
+		});
+	</script>
+</html>

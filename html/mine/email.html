@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>邮箱</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+	</head>
+	<style>
+		
+		.aui-list .aui-list-header {
+			background: #F5F5F5;
+			font-size: 0.7rem;
+			color: #999;
+		}
+	</style>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				邮箱
+			</div>
+			<a class="aui-pull-right aui-btn" id="creat">新增 </a>
+		</header>
+		<div class="aui-content">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-header">
+					已添加
+				</li>
+				<div id="DIV">
+					<script id="Template" type="text/template">
+						{{~ it:data}}
+						<li class="aui-list-item">
+						<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+						{{= data.value}}
+						</div>
+						<div class="aui-list-item-right" onclick="delItem('{{= data.id}}')">
+						<div class="aui-label aui-label-danger">
+						删除
+						</div>
+						</div>
+						</div>
+						</li>
+						{{~}}
+					</script>
+				</div>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript">
+		var dot = doT.template($('#Template').html());
+		var TYPE = 2;
+		var parames = {};
+		parames.type = TYPE;
+		apiready = function() {
+			getEmail();
+		};
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('creat'), 'click', function() {
+			api.prompt({
+				title : '请输入邮箱',
+				buttons : ['保存', '取消']
+			}, function(ret, err) {
+				//var index = ret.buttonIndex;
+				//var text = ret.text;
+				if (ret.buttonIndex == 1) {
+					addEmail(ret.text);
+				}
+			});
+		});
+		//新增邮箱
+		function addEmail(text) {
+			var value = text;
+			//邮箱格式验证
+			var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+			if (!myreg.test(value)) {
+				alert("请输入有效的Email");
+				return;
+			}
+			if (myreg.test(value)) {
+				$BaseUI.showPrgDlg('正在加载...');
+				var par = {};
+				par.value = value;
+				par.type = TYPE;
+				par.name = null;
+				par.status = 1;
+				$httpUtils.post('teacher/v1/addCommunication', par, function(data) {
+					getEmail();
+				}, function(err) {
+					$BaseUI.hidePrgDlg();
+					api.toast({
+						msg : err
+					});
+				});
+			}
+		}
+
+		//获取邮箱列表
+		function getEmail() {
+			$BaseUI.showPrgDlg('正在加载...');
+			//获取email列表
+			$httpUtils.post('teacher/v1/getCommunicationList', parames, function(data) {
+				if (data != null) {
+					$('#DIV').html(dot(data));
+					$BaseUI.hidePrgDlg();
+					$BaseUI.hideHint();
+				} else {
+					$BaseUI.hidePrgDlg();
+					$BaseUI.showHint();
+				}
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+
+		//删除email
+		function delItem(id) {
+			$BaseUI.showPrgDlg('正在加载...');
+			var par = {};
+			par.itemId = id;
+			$httpUtils.post('teacher/v1/delCommunication', par, function(data) {
+				$BaseUI.hidePrgDlg();
+				if (data) {
+					api.toast("删除成功");
+					//刷新页面
+					getEmail();
+				}
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : err
+				});
+			});
+		}
+	</script>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+        <title>课程班级</title>
+        <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css">
+        <script type="text/javascript" src="../../script/api.js"></script>
+        <script type="text/javascript" src="../../script/utils/picker.min.js"></script>
+        <script type="text/javascript" src="../../script/jquery.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+        <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+        <script type="text/javascript" src="../../script/utils/md5.js"></script>
+        <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+        <style>
+        	
+            .exit {
+                width: auto;
+                height: 70px;
+                margin: 20px;
+            }
+            .aui-list.aui-list-in .aui-list-item:last-child{
+              padding-right:0px;
+            }
+            .aui-list .aui-list-header{
+              font-size:0.7rem;
+              color:#999;
+            }
+            /*设置 列表 右侧箭头*/
+            .aui-list-item-arrow:before{
+              right:0.1rem;
+            }
+            .aui-list-item-inner.aui-list-item-arrow{
+              padding-right:0.75rem;
+            }
+
+        </style>
+    </head>
+    <body>
+        <header class="aui-bar aui-bar-nav">
+            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+            <div class="aui-title">
+                授课班级
+            </div>
+            <a class="aui-pull-right aui-btn" id="save">保存 </a>
+        </header>
+        <div class="aui-content aui-margin-t-10">
+            <ul class="aui-list aui-list-in" id="classList">
+                <li class="aui-list-header">
+                    已选班级
+                </li>
+            </ul>
+            <ul class="aui-list aui-list-in mt-5">
+                <li class="aui-list-header">
+                    新增
+                </li>
+                <li class="aui-list-item" id="gradeLabel">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            年级
+                        </div>
+                        <div class="aui-list-item-right" id="grade">
+                            点击选择年级
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" onclick="majorSelect()">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            专业
+                        </div>
+                        <div class="aui-list-item-right" id="major" >
+                            点击选择专业
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item"  id="classTypeLabel">
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            学历
+                        </div>
+                        <div class="aui-list-item-right" id="classType">
+                            点击选择学历
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" id="classNumLabel" >
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-title">
+                            班级
+                        </div>
+                        <div class="aui-list-item-right" id="classNum">
+                            点击选择班级
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="exit">
+                <div class="aui-btn aui-btn-info aui-btn-block" onclick="addClass()">
+                    增加
+                </div>
+            </div>
+        </div>
+    </body>
+    <script id="classTemplate" type="text/template">
+        {{~ it:data }}
+        <li class="aui-list-item classItem" grade={{=data.grade}} majorId={{=data.majorId}} className={{=data.className}} classType={{=data.classType}}>
+        <div class="aui-list-item-inner">
+        <div class="aui-list-item-title">
+        <span>{{=data.className}}</span>
+        </div>
+        <div class="aui-list-item-right">
+        <div class="aui-label aui-label-danger" onclick="delClass(this)">
+        删除
+        </div>
+        </div>
+        </div>
+        </li>
+        {{~}}
+    </script>
+    <script type="text/javascript">
+        var gradeArr = new Array();
+        var gradePicker = null;
+        var classTypeArr = new Array();
+        var classTypePicker = null;
+        var classNumArr = new Array();
+        var classNumPicker = null;
+        var classDot = doT.template($('#classTemplate').html());
+        apiready = function() {
+            initGrade();
+            initClassType();
+            initClassNumType();
+            if(api.pageParam.classes){
+                $('#classList').append(classDot(api.pageParam.classes));
+            }
+        };
+        /**
+         *初始化学年
+         */
+        function initGrade() {
+            var date = new Date;
+            var year = date.getFullYear() - 5;
+            for ( i = 0; i < 10; i++) {
+                gradeArr.push({
+                    text : year + i,
+                    value : year + i
+                });
+            }
+            gradePicker = new Picker({
+                data : [gradeArr],
+                title : '请选择年级'
+            });
+            gradePicker.on('picker.select', function(selectedVal, selectedIndex) {
+                console.log(selectedVal);
+                $('#grade').html(selectedVal);
+                $('#grade').attr('sValue', selectedVal);
+            })
+            $('#gradeLabel').bind('click', function() {
+                gradePicker.show();
+            });
+        }
+
+        /**
+         *初始化classType picker
+         */
+        function initClassType() {
+            classTypeArr.push({
+                text : '研究生',
+                value : '研究生'
+            })
+            classTypeArr.push({
+                text : '本科',
+                value : '本科'
+            })
+            classTypeArr.push({
+                text : '专科',
+                value : '专科'
+            })
+            classTypeArr.push({
+                text : '中专',
+                value : '中专'
+            })
+            classTypeArr.push({
+                text : '技校',
+                value : '技校'
+            })
+            classTypePicker = new Picker({
+                data : [classTypeArr],
+                title : '请选择专业'
+            });
+            classTypePicker.on('picker.select', function(selectedVal, selectedIndex) {
+                console.log(selectedVal);
+                $('#classType').html(selectedVal);
+                $('#classType').attr('sValue', selectedVal);
+            })
+            $('#classTypeLabel').bind('click', function() {
+                classTypePicker.show();
+            });
+        }
+
+        /**
+         *初始化班号 picker
+         */
+        function initClassNumType() {
+            classNumArr.push({
+                text : '1班',
+                value : '1'
+            })
+            classNumArr.push({
+                text : '2班',
+                value : '2'
+            })
+            classNumArr.push({
+                text : '3班',
+                value : '3'
+            })
+            classNumArr.push({
+                text : '4班',
+                value : '4'
+            })
+            classNumArr.push({
+                text : '5班',
+                value : '5'
+            })
+            classNumArr.push({
+                text : '6班',
+                value : '6'
+            })
+            classNumArr.push({
+                text : '7班',
+                value : '7'
+            })
+            classNumArr.push({
+                text : '8班',
+                value : '8'
+            })
+            classNumPicker = new Picker({
+                data : [classNumArr],
+                title : '请选择班级'
+            });
+            classNumPicker.on('picker.select', function(selectedVal, selectedIndex) {
+                console.log(selectedVal);
+                $('#classNum').html(selectedVal + '班');
+                $('#classNum').attr('sValue', selectedVal);
+            })
+            $('#classNumLabel').bind('click', function() {
+                classNumPicker.show();
+            });
+        }
+
+        /**
+         *学科门类选择
+         */
+        function majorSelect() {
+            var UIActionSelector = api.require('UIActionSelector');
+            $BaseUI.showActionSelector('widget://res/major.json', 3, function(ret) {
+                if (ret.selectedInfo) {
+                    var id = '';
+                    var content = '';
+                    for (var i = 0; i < ret.selectedInfo.length; i++) {
+                        var id = ret.selectedInfo[i].id;
+                        content = ret.selectedInfo[i].name;
+                    }
+                    $('#major').attr('sValue', id);
+                    $('#major').html(content);
+                }
+            });
+        };
+        /**
+         *添加班级
+         */
+        function addClass() {
+            if (!$('#grade').attr('sValue')) {
+                alert("年级不能为空！");
+                return;
+            }
+            if (!$('#major').attr('sValue')) {
+                alert("专业不能为空！");
+                return;
+            }
+            if (!$('#classType').attr('sValue')) {
+                alert("学历不能为空！");
+                return;
+            }
+            if (!$('#classNum').attr('sValue')) {
+                alert("班级不能为空！");
+                return;
+            }
+            var className = $('#grade').attr('sValue') + '级' + $('#major').html() + $('#classType').attr('sValue') + $('#classNum').attr('sValue') + '班';
+            if (checkClass($('#grade').attr('sValue'), $('#major').attr('sValue'), $('#classType').attr('sValue'), className) == true) {
+                var temps = new Array();
+                var temp = {};
+                temp.grade = $('#grade').attr('sValue');
+                temp.className = className;
+                temp.majorId = $('#major').attr('sValue');
+                temp.classType = $('#classType').attr('sValue');
+                temps.push(temp);
+                $('#classList').append(classDot(temps));
+            } else {
+                api.toast({
+                    msg : '该班级已添加'
+                });
+            }
+        };
+        /**
+         *确保班级不重复添加
+         */
+        function checkClass(grade, majorId, classType, className) {
+            try {
+                $('.classItem').each(function(i) {
+                    if (grade == $(this).attr("grade") && majorId == $(this).attr("majorId") && classType == $(this).attr("classType") && className == $(this).attr("className")) {
+                        throw false;
+                    }
+                });
+                return true;
+            } catch(e) {
+                return e;
+            }
+        }
+
+        /**
+         *删除班级
+         */
+        function delClass(tag) {
+            $(tag).parent().parent().parent().remove();
+        }
+
+
+        $api.addEvt($api.byId('save'), 'click', function() {
+            if ($('.classItem').length > 0) {
+                var temps = new Array();
+                $('.classItem').each(function(i) {
+                    var temp = {};
+                    temp.grade = $(this).attr("grade");
+                    temp.className = $(this).attr("className");
+                    temp.majorId = $(this).attr("majorId");
+                    temp.classType = $(this).attr("classType");
+                    temps.push(temp);
+                });
+                console.log('temps:'+$api.jsonToStr(temps));
+                api.sendEvent({
+                    name : 'classesChanged',
+                    extra : {
+                        classes : temps
+                    }
+                });
+                $BaseUI.closeWin();
+            } else {
+                api.toast({
+                    msg : '请添加授课班级'
+                });
+            }
+        });
+        $api.addEvt($api.byId('back'), 'click', function() {
+            $BaseUI.closeWin();
+        });
+    </script>
+</html>

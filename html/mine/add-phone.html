@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>添加手机号</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/head.css"/>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				新增手机号
+			</div>
+			<a class="aui-pull-right aui-btn" id="save">保存 </a>
+		</header>
+		<div class="aui-content aui-margin-b-15 aui-margin-t-10">
+			<ul class="aui-list aui-form-list">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label">
+							类型
+						</div>
+						<div class="aui-list-item-input">
+							<input id="name" type="text" placeholder="请输入类型，如：手机/住宅/公司">
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label">
+							号码
+						</div>
+						<div class="aui-list-item-input">
+							<input id="value" type="number" placeholder="请输入手机号码">
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		apiready = function() {
+		};
+		$api.addEvt($api.byId('back'), 'click', function() {
+			api.sendEvent({
+	            name:'addPhoneCallback'
+            });
+			$BaseUI.closeWin();
+		});
+		$api.addEvt($api.byId('save'), 'click', function() {
+			var name = $api.val($api.byId('name'));
+			var value = $api.val($api.byId('value'));
+			//手机号格式验证
+			var isPhone = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+			var isMob = /^((\+?86)|(\(\+86\)))?(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+			if (!isPhone.test(value) && !isMob.test(value)) {
+				alert("你输入的是外星人用的手机号吗？");
+				return;
+			}
+			if (!isPhone.test(value) || !isMob.test(value)) {
+				$BaseUI.showPrgDlg('正在加载...');
+				var par = {};
+				par.value = value;
+				par.type = 1;
+				par.name = name;
+				par.status = 1;
+				$httpUtils.post('teacher/v1/addCommunication', par, function(data) {
+					api.toast({
+	                    msg:'联系方式添加成功！'
+                    });
+                    $api.val($api.byId('name'),'');
+					$api.val($api.byId('value'),'');
+                    $BaseUI.hidePrgDlg();
+				}, function(err) {
+					$BaseUI.hidePrgDlg();
+					api.toast({
+						msg : err
+					});
+				});
+			}
+		});
+	</script>
+</html>
