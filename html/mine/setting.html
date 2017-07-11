@@ -18,10 +18,28 @@
 				软件设置
 			</div>
 		</header>
+		<div class="aui-content aui-margin-b-15">
+			<ul class="aui-list aui-media-list">
+				<li class="aui-list-item aui-list-item-middle">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media" style="width: 3rem;">
+							<img src="../../image/liulangnan.png" class="aui-img-round aui-list-img-sm">
+						</div>
+						<div class="aui-list-item-inner aui-list-item-arrow" id="changePwd">
+							修改密码
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
 	</body>
 	<script type="text/javascript">
 		apiready = function() {
 		};
+		
+		$api.addEvt($api.byId("changePwd"), "click", function(){
+			$BaseUI.openWin("changePwd","../login/changePassWord.html");
+		});
 		$api.addEvt($api.byId('back'), 'click', function() {
 			$BaseUI.closeWin();
 		});
