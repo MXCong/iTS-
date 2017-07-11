@@ -1,125 +1,178 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-        <title>日历</title>
-        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/aui.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/custom.css"/>
-        <script type="text/javascript" src="../script/api.js"></script>
-        <script type="text/javascript" src="../script/utils/baseUI.js"></script>
-        <style>
-        .aui-tips .aui-tips-title { font-size: 0.8rem;}
-        </style>
-    </head>
-    <body>        
-        <div class="aui-tips aui-margin-b-15" id="tips">
-            <i class="aui-iconfont aui-icon-left"></i>
-            <div class="aui-tips-title">
-                2017年7月
-            </div>
-            <i class="aui-iconfont aui-icon-right"></i>
-        </div>
-        <div class="aui-content" style="margin-top:210px">
-            <ul class="aui-list aui-media-list">
-                <li class="aui-list-header">
-                    工作列表
-                </li>
-                <li class="aui-list-item aui-list-item-middle">
-                    <div class="aui-media-list-item-inner">
-                    	<div class="aui-list-item-media" style="width: 3rem;">
-								<img src="../image/zuoye.png" class="aui-img-round" >
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>日历</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/custom.css"/>
+		<script type="text/javascript" src="../script/api.js"></script>
+		<script type="text/javascript" src="../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../script/utils/dateUtil.js"></script>
+		<style>
+			.aui-tips .aui-tips-title {
+				font-size: 0.8 rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="aui-tips aui-margin-b-15" id="tips">
+			<i class="aui-iconfont aui-icon-left" id="perMonth"></i>
+			<div class="aui-tips-title" id="dateHint">
+				
+			</div>
+			<i class="aui-iconfont aui-icon-right" id="nextMonth"></i>
+		</div>
+		<div class="aui-content" style="margin-top:210px">
+			<ul class="aui-list aui-media-list">
+				<li class="aui-list-header">
+					工作列表
+				</li>
+				<li class="aui-list-item aui-list-item-middle">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media" style="width: 3rem;">
+							<img src="../image/zuoye.png" class="aui-img-round" >
 						</div>
-                        <div class="aui-list-item-inner aui-list-item-arrow">
-                            <div class="aui-list-item-text">
-                                <div class="aui-list-item-title aui-font-size-14">
-                                    软件工程(2017级软件工程2班、2017级软件工程2班)
-                                </div>
-                            </div>
-                            <div class="aui-list-item-text">
-                                上课时间:04-09 09:00~12:00
-                            </div>
-                            <div class="aui-list-item-text">
-                                上课地点：尚学楼302教室
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="aui-list-item aui-list-item-middle">
-                    <div class="aui-media-list-item-inner">
-                        <div class="aui-list-item-media" style="width: 3rem;">
-								<img src="../image/kecheng.png" class="aui-img-round" >
+						<div class="aui-list-item-inner aui-list-item-arrow">
+							<div class="aui-list-item-text">
+								<div class="aui-list-item-title aui-font-size-14">
+									软件工程(2017级软件工程2班、2017级软件工程2班)
+								</div>
+							</div>
+							<div class="aui-list-item-text">
+								上课时间:04-09 09:00~12:00
+							</div>
+							<div class="aui-list-item-text">
+								上课地点：尚学楼302教室
+							</div>
 						</div>
-                        <div class="aui-list-item-inner aui-list-item-arrow">
-                            <div class="aui-list-item-text">
-                                <div class="aui-list-item-title aui-font-size-14">
-                                    软件工程(2017级软件工程2班、2017级软件工程2班)
-                                </div>
-                            </div>
-                            <div class="aui-list-item-text">
-                                上课时间:04-09 09:00~12:00
-                            </div>
-                            <div class="aui-list-item-text">
-                                上课地点：尚学楼302教室
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                
-            </ul>
-        </div>
-    </body>
-    <script type="text/javascript">
-        var uiCalendar = null;
-        //console.log('window:' + $api.byId('header').offsetHeight);
-        apiready = function() {
-            uiCalendar = api.require('UICalendar');
-            initCalendar();
-        };
-        //初始化日历控件
-        function initCalendar() {
-            uiCalendar.open({
-                rect : {
-                    x : 0,
-                    //y : $api.byId('header').offsetHeight + $api.byId('tips').offsetHeight,
-                    y : $api.byId('tips').offsetHeight,
-                    w : api.frameWidth,
-                    h : 210
-                },
-                styles : {
-                    bg : '#fff',
-                    week : {
-                        weekdayColor : '#999999',
-                        weekendColor : '#d1d1d1',
-                        size : 18
-                    },
-                    date : {
-                        color : '#3b3b3b',
-                        selectedColor : '#fff',
-                        selectedBg : 'widget://image/calendarbg1.png',
-                        size : 18
-                    },
-                    today : {
-                        color : '#fff',
-                        bg : 'widget://image/today.png'
-                    },
-                    specialDate : {
-                        color : '#ffa74d',
-                        bg : 'widget://image/special.png'
-                    }
-                },
-                 specialDate: [{date: '2017-07-01'},{date: '2017-07-05'},{date: '2017-07-08'}],
-                switchMode : 'none',
-                fixedOn : api.frameName,
-                fixed : false
-            }, function(ret, err) {
-            });
-        }
-        
-        $api.addEvt($api.byId('back'), 'click', function(){
-            $BaseUI.closeWin();
-        });
-    </script>
+					</div>
+				</li>
+				<li class="aui-list-item aui-list-item-middle">
+					<div class="aui-media-list-item-inner">
+						<div class="aui-list-item-media" style="width: 3rem;">
+							<img src="../image/kecheng.png" class="aui-img-round" >
+						</div>
+						<div class="aui-list-item-inner aui-list-item-arrow">
+							<div class="aui-list-item-text">
+								<div class="aui-list-item-title aui-font-size-14">
+									软件工程(2017级软件工程2班、2017级软件工程2班)
+								</div>
+							</div>
+							<div class="aui-list-item-text">
+								上课时间:04-09 09:00~12:00
+							</div>
+							<div class="aui-list-item-text">
+								上课地点：尚学楼302教室
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var uiCalendar = null;
+		//console.log('window:' + $api.byId('header').offsetHeight);
+		apiready = function() {
+			uiCalendar = api.require('UICalendar');
+			initCalendar();
+		};
+		//初始化日历控件
+		function initCalendar() {
+			uiCalendar.open({
+				rect : {
+					x : 0,
+					//y : $api.byId('header').offsetHeight + $api.byId('tips').offsetHeight,
+					y : $api.byId('tips').offsetHeight,
+					w : api.frameWidth,
+					h : 210
+				},
+				styles : {
+					bg : '#fff',
+					week : {
+						weekdayColor : '#999999',
+						weekendColor : '#d1d1d1',
+						size : 18
+					},
+					date : {
+						color : '#3b3b3b',
+						selectedColor : '#0000FF',
+						selectedBg : 'widget://image/today.png',
+						size : 18
+					},
+					today : {
+						color : '#ccc',
+						bg : 'widget://image/today.png'
+					},
+					specialDate : {
+						color : '#ffa74d',
+						bg : 'widget://image/special.png'
+					}
+				},
+				specialDate : [{
+					date : '2017-07-01'
+				}, {
+					date : '2017-07-05'
+				}, {
+					date : '2017-07-08'
+				}],
+				switchMode : 'none',
+				fixedOn : api.frameName,
+				fixed : false
+			}, function(ret, err) {
+				dateHint(ret.year,ret.month);//初始化日历控件上方的年份及月份信息
+				alert(JSON.stringify(ret));
+			});
+		}
+
+		//点击“今天”按钮跳转到今天的日期
+		function jumpToToday() {
+			var cd = $Date.getDate();
+			uiCalendar.setDate({
+				date : cd,
+				ignoreSelected : false
+			}, function(ret, err) {
+				if (ret.status) {
+					alert(JSON.stringify(ret));
+					dateHint($Date.getYear(),$Date.getMonth2());//初始化日历控件上方的年份及月份信息
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		}
+
+		//切换到上一个月的日历
+		$api.addEvt($api.byId("perMonth"), "click", function() {
+			uiCalendar.prevMonth(function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+					dateHint(ret.year,ret.month);
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		});
+		//切换到下一个月的日历
+		$api.addEvt($api.byId("nextMonth"), "click", function() {
+			uiCalendar.nextMonth(function(ret, err) {
+				if (ret) {
+					alert(JSON.stringify(ret));
+					dateHint(ret.year,ret.month);
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		});
+		//日历控件上边的年份及月份提示信息
+		function dateHint(year,month){
+			var hint = year+"年"+month+"月";
+			$api.html($api.byId("dateHint"), hint);
+		}
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
 </html>

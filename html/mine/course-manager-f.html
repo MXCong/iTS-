@@ -126,25 +126,30 @@
 			event.stopPropagation();
 		}
 
+		
 		/**
 		 *删除课程信息
 		 */
 		function delCourse(tag, id) {
-			$BaseUI.showPrgDlg();
-			var params = {};
-			params.courseId = id;
-			$httpUtils.post('v1/deleteCourse', params, function(ret) {
-				$BaseUI.hidePrgDlg();
-				$(tag).parent().parent().remove();
-			}, function(msg) {
-				$BaseUI.hidePrgDlg();
-				if (msg) {
-					api.toast({
-						msg : msg
-					});
-				}
+			$BaseUI.confirm('确认删除？', '删除后，课程下的所有内容将同步删除...？', '取消', '确定', function() {
+				return;
+			}, function() {
+				$BaseUI.showPrgDlg();
+				var params = {};
+				params.courseId = id;
+				$httpUtils.post('v1/deleteCourse', params, function(ret) {
+					$BaseUI.hidePrgDlg();
+					$(tag).parent().parent().remove();
+				}, function(msg) {
+					$BaseUI.hidePrgDlg();
+					if (msg) {
+						api.toast({
+							msg : msg
+						});
+					}
+				});
+				event.stopPropagation();
 			});
-			event.stopPropagation();
 		}
 
 		/**

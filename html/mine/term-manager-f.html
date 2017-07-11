@@ -158,7 +158,12 @@
             	});
             });
 		}
-		
+		//学期编辑
+		function editTerm(termId){
+			$BaseUI.openWin("term-edit","term-edit.html",{
+				"termId" : termId
+			});
+		}
 		$api.addEvt($api.byId('back'), 'click', function() {
 			$BaseUI.closeWin();
 		});

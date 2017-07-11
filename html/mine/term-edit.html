@@ -125,7 +125,6 @@
 			$BaseUI.showPrgDlg('咦？天上有飞机！！');
 			$httpUtils.post('teacher/v1/getAdviceTerm', null, function(ret) {
 				$BaseUI.hidePrgDlg();
-				alert(JSON.stringify(ret));	
 				if (ret) {
 					$api.text($api.byId("startYear"), ret.startYear);
 					$api.text($api.byId("endYear"), ret.endYear);
