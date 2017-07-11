@@ -7,6 +7,7 @@
         <title>课表详情</title>
         <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
         <link rel="stylesheet" type="text/css" href="../../css/aui.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/homework.css"/>
         <script type="text/javascript" src="../../script/jquery.min.js"></script>
         <script type="text/javascript" src="../../script/api.js"></script>
         <script type="text/javascript" src="../../script/utils/doT.min.js"></script>
@@ -15,6 +16,15 @@
         <script type="text/javascript" src="../../script/http/httpUtils.js"></script>
         <script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
     </head>
+    <style>
+    	.aui-content .aui-list .aui-list-header{
+          		font-size:0.7rem;
+          		color:#999;
+          	}
+        .aui-list .aui-list-item-inner{
+          		padding-right:0rem;
+          	}
+    </style>
     <body>
         <div class="aui-content" id="content">
 
@@ -96,7 +106,7 @@
                         </div>
                     </div>
                 </li>
-                <div class="aui-content-padded-left">
+                <div class="aui-content-padded-left mt-5">
                         {{ for(var prop in data.timeCells) { }}
                     <ul class="aui-list">
                         <li class="aui-list-header">
