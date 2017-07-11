@@ -89,7 +89,7 @@
 	</body>
 	<script type="text/javascript" src="../../script/api.js"></script>
 	<script type="text/javascript">
-		var termId;
+		var termId = null;
 		apiready = function() {
 			eventListener();
 			termId = api.pageParam.termId;
@@ -109,7 +109,6 @@
 			params.termId = termId;
 			$BaseUI.showPrgDlg();
 			$httpUtils.post('teacher/v1/termDetail', params, function(ret) {
-				//alert(JSON.stringify(ret));
 				if (ret) {
 					$api.text($api.byId("startYear"), ret.startYear);
 					$api.text($api.byId("endYear"), ret.endYear);

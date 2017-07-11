@@ -41,29 +41,27 @@
 						</div>
 						<input type="hidden" id="termId" />
 						<div class="aui-list-item-right" id="startYear">
-							
+							？？？？
 						</div>
 						-
 						<div class="aui-list-item-right" id="endYear">
-							
+							？？？？
 						</div>
 						学年第
 						<div class="aui-list-item-right" id="termNum">
-							
+							？
 						</div>
 						学期
 					</div>
 				</li>
 				<li class="aui-list-item">
 					<div class="aui-list-item-inner aui-list-item-arrow">
-						<div class="aui-list-item-title">
-							开始日期
-						</div>
-						<div class="aui-list-item-right">
-							<div style="position:relative;top:0; right:0.75rem;" id="startDate">
-								点击选择开始日期
-							</div>
-						</div>
+						<div class="aui-list-item-label">
+                            开始日期
+                        </div>
+                        <div class="aui-list-item-input inpmr">
+                            <input type="date" placeholder="请选择开始日期" value="2017-01-01" id="startDate"/>
+                        </div>
 					</div>
 				</li>
 				<li class="aui-list-item">
@@ -125,13 +123,14 @@
 		//获取学期的缺省值
 		function getAdviceTerm() {
 			$BaseUI.showPrgDlg('咦？天上有飞机！！');
-			$httpUtils.post('teacher/v1/getAdviceTerm', '', function(ret) {
+			$httpUtils.post('teacher/v1/getAdviceTerm', null, function(ret) {
 				$BaseUI.hidePrgDlg();
+				alert(JSON.stringify(ret));	
 				if (ret) {
 					$api.text($api.byId("startYear"), ret.startYear);
 					$api.text($api.byId("endYear"), ret.endYear);
 					$api.text($api.byId("termNum"), ret.termNum);
-					$api.text($api.byId("startDate"), ret.startDate);
+					$api.val($api.byId("startDate"), ret.startDate);
 					$api.text($api.byId("weekCount"), ret.weekCount);
 					$api.text($api.byId("endDate"), ret.endDate);
 				}
@@ -186,7 +185,7 @@
 			var startYear = $api.text($api.byId("startYear"));
 			var endYear = $api.text($api.byId("endYear"));
 			var termNum = $api.text($api.byId("termNum"));
-			var startDate = $api.text($api.byId("startDate"));
+			var startDate = $api.val($api.byId("startDate"));
 			var weekCount = $api.text($api.byId("weekCount"));
 			var endDate = $api.text($api.byId("endDate"));
 			var termId = $api.text($api.byId("termId"));
@@ -259,12 +258,6 @@
 			$api.text($api.byId('title'), "学期编辑");
 			$api.text($api.byId('edit'), "保存");
 		}
-
-		//日期选择器
-		$api.addEvt($api.byId("startDate"), "click", function() {
-			$BaseUI.showActionSelector("widget://res/date.json", 4, function(ret) {
-			});
-		});
 		//初始化开始年份
 		function initGrade() {
 			var date = new Date;
@@ -313,8 +306,12 @@
 			gradePicker3.on('picker.select', function(selectedVal, selectedIndex) {
 				$('#termNum').html(selectedVal);
 			})
-			$('#startYear').bind('click', function() {
-				gradePicker.show();
+//			$('#startYear').bind('click', function() {
+//				alert("startYear");
+//				gradePicker.show();
+//			});
+			$api.addEvt($api.byId("startYear"), "click", function(){
+				gradePicker.show();			
 			});
 			$('#endYear').bind('click', function() {
 				gradePicker2.show();
@@ -326,11 +323,11 @@
 
 		//计算学期结束日期
 		function countEndDate() {
-			var startDate = $api.text($api.byId("startDate"));
-			var weekCount = $api.text($api.byId("weekCount"));
+			var startDate = $api.val($api.byId("startDate"));
+			var weekCount = $api.html($api.byId("weekCount"));
 			console.log("startDate:" + startDate + "   weekCount:" + weekCount);
 			var endD = dateSubmit(startDate, weekCount);
-			$api.text($api.byId("endDate"), endD);
+			$api.html($api.byId("endDate"), endD);
 		}
 
 		/**

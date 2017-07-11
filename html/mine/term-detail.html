@@ -26,8 +26,12 @@
 	</body>
 	<script type="text/javascript" src="../../script/api.js"></script>
 	<script type="text/javascript">
+		var termId = null;
 		apiready = function() {
-			$BaseUI.openFrame('term-detail-f', 'term-detail-f.html');
+			termId = api.pageParam.termId;
+			$BaseUI.openFrame('term-detail-f', 'term-detail-f.html',{
+				"termId":termId			
+			});
 		};
 		//编辑按钮点击事件
 		$api.addEvt($api.byId('edit'), 'click', function() {
