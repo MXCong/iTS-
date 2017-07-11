@@ -7,6 +7,8 @@
         <title>授课列表</title>
         <link rel="stylesheet" type="text/css" href="../css/api.css"/>
         <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+        <link rel="stylesheet" type="text/css" href="../css/homework.css"/>
+        
         <script type="text/javascript" src="../script/aui/aui-list-swipe.js"></script>
         <script type="text/javascript" src="../script/jquery.min.js"></script>
         <script type="text/javascript" src="../script/api.js"></script>
@@ -64,16 +66,17 @@
                 display: block;
                 float: left;
             }
-            #create{
-                font-size:15px;
+            .aui-list .aui-list-item {
+				border-bottom: 1px solid #DDDDDD;
+				margin: 0 0.75rem;
+				padding-left:0rem;
+			}
+			.aui-list .aui-list-item:first-child {
+				margin: 0 0.75rem;
+			}
+            .aui-list-item .aui-list-item-arrow:before{
+            	right:0.1rem;
             }
-            .aui-title{
-              font-size: 16px;
-            }
-            .aui-bar a:link {color: #fff} /* 未访问的链接 */
-            .aui-bar a:visited {color: #fff} /* 已访问的链接 */
-            .aui-bar a:hover {color: #fff} /* 当有鼠标悬停在链接上 */
-            .aui-bar a:active {color: #fff} /* 被选择的链接 */
         </style>
     </head>
     <body>
