@@ -11,8 +11,7 @@
 		<script type="text/javascript" src="../script/aui/aui-slide.js"></script>
 		<script src="../script/api.js"></script>
 		<script src="../script/aui/aui-pull-refresh.js"></script>
-		<script src="../script/utils/baseUI.js"></script>
-		
+		<script src="../script/utils/baseUI.js"></script>		
 		<link rel="stylesheet" type="text/css" href="../css/custom.css" />
 		
 	</head>
@@ -196,9 +195,10 @@
 						targetHeight : 1000,
 						saveToPhotoAlbum : false
 					}, function(ret, err) {
-						if (ret.data) {
-							//add2List(ret.data);
-							$BaseUI.openWin('take-pictures', './take-pictures.html');
+						if (ret) {
+							$BaseUI.openWin('take-pictures', './take-pictures.html',{
+								"file": ret.data
+							});
 						}
 					});
 				} else if (ret == 2) {
@@ -206,8 +206,9 @@
 					fileBrowser.open(function(ret, err) {
 						if (ret) {
 							fileBrowser.close();
-							$BaseUI.openWin('take-pictures', './take-pictures.html');
-							//add2List(ret.url);
+							$BaseUI.openWin('take-pictures', './take-pictures.html',{
+								"file": ret.url
+							});
 						}
 					});
 				}

@@ -1,131 +1,221 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
-        <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-        <title>随手拍</title>
-        <link rel="stylesheet" type="text/css" href="../css/api.css"/>
-        <link rel="stylesheet" type="text/css" href="../css/aui.css"/>
-        <script type="text/javascript" src="../script/api.js"></script>
-        <script type="text/javascript" src="../script/utils/baseUI.js"></script>
-        <style>
-            .icon {
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-        </style>
-    </head>
-    <body>
-        <header class="aui-bar aui-bar-nav">
-            <a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
-            <div class="aui-title">
-                授课资源
-            </div>
-            <a class="aui-pull-right aui-btn" id="edit">上传 </a>
-        </header>
-        <div class="content aui-content aui-margin-b-15 aui-margin-t-10">
-            <ul class="aui-list aui-list-in">
-                <li class="aui-list-item">
-                    <div class="aui-list-item-inner aui-list-item-arrow">
-                        <div class="aui-list-item-title">
-                            所属授课
-                        </div>
-                        <div class="aui-list-item-right">
-                            <div style="position:relative;top:0; right:0">
-                                点击选择所属授课
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="aui-list-item">
-                    <div class="aui-list-item-inner aui-list-item-arrow">
-                        <div class="aui-list-item-title">
-                            所属分类
-                        </div>
-                        <div class="aui-list-item-right">
-                            <div style="position:relative;top:0; right:0">
-                                点击选择所属分类
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="aui-list-item">
-                    <div class="aui-list-item-inner">
-                        <div class="aui-list-item-title">
-                            公开
-                        </div>
-                        <div class="aui-list-item-right">
-                            <input type="checkbox" class="aui-switch" checked>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <section class="aui-grid aui-margin-b-15">
-                <div class="aui-row">
-                    <div class="aui-col-xs-2">
-                        <div class="aui-badge">
-                            X
-                        </div>
-                        <img class="icon" src="../image/icon.png"></img>
-                        <div class="aui-grid-label">
-                            设置
-                        </div>
-                    </div>
-                    <div class="aui-col-xs-2">
-                        <div class="aui-badge">
-                            X
-                        </div>
-                        <img class="icon" src="../image/icon.png"></img>
-                        <div class="aui-grid-label">
-                            设置
-                        </div>
-                    </div>
-                    <div class="aui-col-xs-2">
-                        <div class="aui-badge">
-                            X
-                        </div>
-                        <img class="icon" src="../image/icon.png"></img>
-                        <div class="aui-grid-label">
-                            设置
-                        </div>
-                    </div>
-                    <div class="aui-col-xs-2">
-                        <div class="aui-badge">
-                            X
-                        </div>
-                        <img class="icon" src="../image/icon.png"></img>
-                        <div class="aui-grid-label">
-                            设置
-                        </div>
-                    </div>
-                    <div class="aui-col-xs-2">
-                        <div class="aui-badge">
-                            X
-                        </div>
-                        <img class="icon" src="../image/icon.png"></img>
-                        <div class="aui-grid-label">
-                            设置
-                        </div>
-                    </div>
-                    <div class="aui-col-xs-2">
-                        <div class="aui-badge">
-                            X
-                        </div>
-                        <img class="icon" src="../image/icon.png"></img>
-                        <div class="aui-grid-label">
-                            设置
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </body>
-    <script type="text/javascript">
-        apiready = function() {
-        };
-        $api.addEvt($api.byId('back'), 'click', function() {
-            $BaseUI.closeWin();
-        });
-    </script>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>随手拍</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css"/>
+		<script type="text/javascript" src="../script/api.js"></script>
+		<script type="text/javascript" src="../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../script/utils/prefsUtils.js"></script>
+		<script type="text/javascript" src="../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../script/http/httpUtils.js"></script>
+		<style>
+			.icon {
+				padding-left: 10px;
+				padding-right: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav">
+			<a class="aui-pull-left aui-btn" id="back"> <span class="aui-iconfont aui-icon-left"></span>返回 </a>
+			<div class="aui-title">
+				授课资源
+			</div>
+			<a class="aui-pull-right aui-btn" id="edit">上传 </a>
+		</header>
+		<div class="content aui-content aui-margin-b-15 aui-margin-t-10">
+			<ul class="aui-list aui-list-in">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							资源名称
+						</div>
+						<div class="aui-list-item-right">
+							<input style="position:relative;top:0; right:0" type="text" id="customName" />
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner aui-list-item-arrow">
+						<div class="aui-list-item-title">
+							所属授课
+						</div>
+						<div class="aui-list-item-right" onclick="showCourseLib();">
+							<input type="hidden" id="courseId" />
+							<div style="position:relative;top:0; right:0" id="courseName">
+								点击选择所属授课
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner aui-list-item-arrow">
+						<div class="aui-list-item-title">
+							所属分类
+						</div>
+						<div class="aui-list-item-right" onclick="showFileType();">
+							<input type="hidden" id="typeId" />
+							<div style="position:relative;top:0; right:0" id="typeName">
+								点击选择所属分类
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-title">
+							公开
+						</div>
+						<div class="aui-list-item-right">
+							<input type="checkbox" class="aui-switch" checked>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<section class="aui-grid aui-margin-b-15">
+				<div class="aui-row">
+					<div class="aui-col-xs-2">
+						<div class="aui-badge" id="files">
+							X
+						</div>
+						<img class="icon" id="image" src="../image/file.png"></img>
+						<div class="aui-grid-label" id="fileName">
+							XXX
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var url = null;
+		apiready = function() {
+			initDefaultValue();
+			eventListener();
+			url = api.pageParam.file;
+			initFile(url);
+		};
+		//获取默认值
+		function initDefaultValue() {
+			//获取缓存数据
+			var courseName = $PrefsUtils.getPref("course-resource-courseName");
+			var courseId = $PrefsUtils.getPref("course-resource-courseId");
+			var typeName = $PrefsUtils.getPref("course-resource-typeName");
+			var typeId = $PrefsUtils.getPref("course-resource-typeId");
+			//赋值
+			if (courseName && courseId) {
+				$api.text($api.byId('courseName'), courseName);
+				$api.val($api.byId('courseId'), courseId);
+			}
+			if (typeId && typeName) {
+				$api.text($api.byId('typeName'), typeName);
+				$api.val($api.byId('typeId'), typeId);
+			}
+		}
+
+		//上传课程资源时，选择资源所属课程
+		function showCourseLib() {
+			$BaseUI.openWin('course-select', './course-resource/course-select.html');
+		}
+
+		//课程资源类别的增删改查操作
+		function showFileType() {
+			$BaseUI.openWin('titleList', './mine/title-post.html', {
+				"type" : 6,
+				"title" : "资源类别"
+			});
+		}
+
+		//监听事件
+		function eventListener() {
+			//选择资源所属课次后返回数据
+			api.addEventListener({
+				name : 'courseSelect-file'
+			}, function(ret, err) {
+				//coding...
+				$api.text($api.byId('courseName'), ret.value.courseName);
+				$api.val($api.byId('courseId'), ret.value.courseId);
+				$PrefsUtils.savePref("course-resource-courseName", ret.value.courseName);
+				$PrefsUtils.savePref("course-resource-courseId", ret.value.courseId);
+			});
+			//选择资源类别后返回数据
+			api.addEventListener({
+				name : 'title-post'
+			}, function(ret, err) {
+				//coding...
+				$api.text($api.byId('typeName'), ret.value.dName);
+				$api.val($api.byId('typeId'), ret.value.dId);
+				$PrefsUtils.savePref("course-resource-typeName", ret.value.dName);
+				$PrefsUtils.savePref("course-resource-typeId", ret.value.dId);
+			});
+		}
+
+		//获取并处理资源附件
+		function initFile(url) {
+			//截取文件后缀，判断文件类型
+			var suffix = url.substring(url.length - 4, url.length);
+			var args = url.split("/");
+			$api.html($api.byId("fileName"), args[args.length - 1]);
+			if (suffix.indexOf("jpg") > -1) {//附件为图片
+				$api.attr($api.byId("image"), "src", url);
+			} else if (suffix.indexOf("mp4") > -1 || suffix.indexOf("avi") > -1 || suffix.indexOf("mkv") > -1) {
+			}
+		}
+
+		//上传资源
+		$api.addEvt($api.byId("edit"), "click", function() {
+			var params = {};
+			if ($("input[type='checkbox']").is(':checked')) {
+				params.fileAuth = 1;
+			} else {
+				params.fileAuth = 0;
+			}
+			params.courseId = $api.val($api.byId("courseId"));
+			params.files = {
+				file : url
+			};
+			params.customName = $api.val($api.byId("customName"));
+			params.vocabularyId = $api.val($api.byId("typeId"));
+			if (!url) {
+				api.toast({
+					msg : '你在上传神马...'
+				});
+				return;
+			}
+			if (!params.courseId) {
+				api.toast({
+					msg : '请选择资源所属课程'
+				});
+				return;
+			}
+			if (!params.vocabularyId) {
+				api.toast({
+					msg : '请选择资源所属类别'
+				});
+				return;
+			}
+			$BaseUI.showPrgDlg("及时当勉励，岁月不待人..");
+			console.log(JSON.stringify(params));
+			$httpUtils.post("teacher/course/addFile", params, function(ret) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : '上传成功'
+				});
+				$BaseUI.closeWin();
+			}, function(err) {
+				$BaseUI.hidePrgDlg();
+				api.toast({
+					msg : '上传失败，请重试'
+				});
+			});
+		});
+		$api.addEvt($api.byId('back'), 'click', function() {
+			$BaseUI.closeWin();
+		});
+	</script>
 </html>
