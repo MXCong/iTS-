@@ -9,10 +9,25 @@
 		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
 		<script type="text/javascript" src="../../script/api.js"></script>
 		<script src="../../script/utils/baseUI.js"></script>
+		<script src="../../script/jquery.min.js"></script>
 		<style>
-		.aui-grid .aui-iconfont { font-size:1.0rem;}
-		.aui-grid {position: fixed; bottom: -2px; z-index: 999; border-top:1px solid #eee; box-shadow: 0 0 8px #e1e1e1;}
-		.aui-grid [class*=aui-col-] {padding: 0.3rem 0;color: #f00;}
+			.aui-grid .aui-iconfont {
+				font-size: 1.0rem;
+			}
+			.aui-grid {
+				position: fixed;
+				bottom: -2px;
+				z-index: 999;
+				border-top: 1px solid #eee;
+				box-shadow: 0 0 8px #e1e1e1;
+			}
+			.aui-grid [class*=aui-col-] {
+				padding: 0.3rem 0;
+				color: #f00;
+			}
+			.aui-content {
+				margin-bottom: 50px;
+			}
 		</style>
 	</head>
 	<body>
@@ -20,7 +35,7 @@
 		<section class="aui-content">
 			<div class="aui-card-list">
 				<div class="aui-card-list-content">
-					<ul class="aui-list aui-media-list">
+					<ul class="aui-list aui-media-list" id="checkList">
 						<li class="aui-list-item aui-list-item-middle">
 							<div class="aui-media-list-item-inner">
 								<div class="aui-list-item-inner" onclick="showDetail();">
@@ -51,41 +66,7 @@
 									</div>
 								</div>
 								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox" checked>
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" onclick="showDetail();">
-									<div class="aui-list-item-text">
-										<div class="aui-list-item-title aui-font-size-16">
-											软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
 									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" onclick="showDetail();">
-									<div class="aui-list-item-text">
-										<div class="aui-list-item-title aui-font-size-16">
-											十万个为什么？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox" checked>
 								</div>
 							</div>
 						</li>
@@ -119,7 +100,7 @@
 									</div>
 								</div>
 								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox" checked>
+									<input type="checkbox" class="aui-checkbox">
 								</div>
 							</div>
 						</li>
@@ -153,7 +134,41 @@
 									</div>
 								</div>
 								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox" checked>
+									<input type="checkbox" class="aui-checkbox">
+								</div>
+							</div>
+						</li>
+						<li class="aui-list-item aui-list-item-middle">
+							<div class="aui-media-list-item-inner">
+								<div class="aui-list-item-inner" onclick="showDetail();">
+									<div class="aui-list-item-text">
+										<div class="aui-list-item-title aui-font-size-16">
+											软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的？
+										</div>
+									</div>
+									<div class="aui-list-item-text">
+										知识点：绪论
+									</div>
+								</div>
+								<div style="margin-right: 15px;">
+									<input type="checkbox" class="aui-checkbox">
+								</div>
+							</div>
+						</li>
+						<li class="aui-list-item aui-list-item-middle">
+							<div class="aui-media-list-item-inner">
+								<div class="aui-list-item-inner" onclick="showDetail();">
+									<div class="aui-list-item-text">
+										<div class="aui-list-item-title aui-font-size-16">
+											十万个为什么？
+										</div>
+									</div>
+									<div class="aui-list-item-text">
+										知识点：绪论
+									</div>
+								</div>
+								<div style="margin-right: 15px;">
+									<input type="checkbox" class="aui-checkbox" >
 								</div>
 							</div>
 						</li>
@@ -163,9 +178,9 @@
 		</section>
 		<section class="aui-grid">
 			<div class="aui-row">
-				<div class="aui-col-xs-4">
-					<i class="aui-iconfont aui-icon-correct"></i>
-					<div class="aui-grid-label">
+				<div class="aui-col-xs-4"  id="checkall">
+					<i class="aui-iconfont aui-icon-correct" id="cicon"></i>
+					<div class="aui-grid-label" id="all">
 						全选
 					</div>
 				</div>
@@ -211,5 +226,23 @@
 		function fnClo() {
 			$BaseUI.closeWin();
 		}
+		
+		
+		//全选或全不选
+		var bRt=true;		
+		$("#checkall").click(function(){
+		if(bRt){
+			$("#checkList :checkbox").prop("checked", true);
+			$("#all").html("取消全选");
+			$("#cicon").attr("class", "aui-iconfont aui-icon-close");
+			bRt=false;
+		}else{
+			$("#checkList :checkbox").prop("checked", false);
+			$("#all").html("全选");
+			$("#cicon").attr("class", "aui-iconfont aui-icon-correct");
+			bRt=true;
+			}
+	
+		}); 
 	</script>
 </html>
