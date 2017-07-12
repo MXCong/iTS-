@@ -56,7 +56,6 @@
         params.timeStamp = myDate.getTime();
         params.signature = hex_md5(token + params.timeStamp);
         params.version = h.version;
-        console.log("全部参数："+JSON.stringify(params));
         api.ajax({
             url : 'http://192.168.1.107:8080/eteacher1.1/remote/' + url,
             // url : 'http://60.205.153.22:8080/eteacher/remote/' + url,
