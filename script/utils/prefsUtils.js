@@ -26,7 +26,6 @@
 	 */
 	p.getPref = function(k) {
 		if (!k) {
-			alert("key不能为空！");
 			return;
 		}
 		var value = api.getPrefs({
