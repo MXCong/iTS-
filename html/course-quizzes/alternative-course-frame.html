@@ -8,9 +8,16 @@
 		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/aui-slide.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/custom.css" />
-		<script type="text/javascript" src="../../script/aui/aui-slide.js"></script>
-		<script src="../../script/api.js"></script>
-		<script src="../../script/utils/baseUI.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/api.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-pull-refresh.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+		<script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
 	</head>
 	<body style="background:#f2f2f2;">
 		<div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
@@ -19,115 +26,67 @@
 				<span class="aui-margin-l-5">当前不在上课时间哦~ 提前准备习题吧</span>
 			</div>
 		</div>
-		<section class="aui-content-padded" onclick="alternative();">
-			<div class="aui-card-list keepactive">
-				<div class="keepmark"></div>
-				<div class="card-left">
-					<p class="class-name">
-						软件工程(13级软件工程1班)
-					</p>
-					<p class="class-sign">
-						授课名称
-					</p>
-				</div>
-				<div class="card-right">
-					<p class="class-name">
-						30
-					</p>
-					<p class="class-sign">
-						备选题
-					</p>
-				</div>
-			</div>
-		</section>
-		<section class="aui-content-padded">
-			<div class="aui-card-list">
-				<div class="card-left">
-					<p class="class-name">
-						软件工程当前不在上课时间哦
-					</p>
-					<p class="class-sign">
-						授课名称
-					</p>
-				</div>
-				<div class="card-right">
-					<p class="class-name">
-						30
-					</p>
-					<p class="class-sign">
-						备选题
-					</p>
-				</div>
-			</div>
-		</section>
-		<section class="aui-content-padded" onclick="alternative();">
-			<div class="aui-card-list keepactive">
-				<div class="keepmark"></div>
-				<div class="card-left">
-					<p class="class-name">
-						软件工程(13级软件工程1班课时间哦
-					</p>
-					<p class="class-sign">
-						授课名称
-					</p>
-				</div>
-				<div class="card-right">
-					<p class="class-name">
-						30
-					</p>
-					<p class="class-sign">
-						题目总数
-					</p>
-				</div>
-			</div>
-		</section>
-		<section class="aui-content-padded">
-			<div class="aui-card-list">
-				<div class="card-left">
-					<p class="class-name">
-						软件工程当前不在上课时间哦
-					</p>
-					<p class="class-sign">
-						授课名称
-					</p>
-				</div>
-				<div class="card-right">
-					<p class="class-name">
-						30
-					</p>
-					<p class="class-sign">
-						题目总数
-					</p>
-				</div>
-			</div>
-		</section>
-		<section class="aui-content-padded">
-			<div class="aui-card-list">
-				<div class="card-left">
-					<p class="class-name">
-						软件工程当前不在上课时间哦
-					</p>
-					<p class="class-sign">
-						授课名称
-					</p>
-				</div>
-				<div class="card-right">
-					<p class="class-name">
-						30
-					</p>
-					<p class="class-sign">
-						题目总数
-					</p>
-				</div>
-			</div>
-		</section>
+		<div class="aui-content aui-refresh-content" >
+			<div id="list"></div>
+		</div>
 	</body>
+	<script id="courseTemplate" type="text/template">
+		{{~ it:data }}
+		<section class="aui-content-padded" onclick="alternative('{{=data.teachingId}}')">
+		<div class="aui-card-list">
+		<!--<div class="keepmark"></div>-->
+		<div class="card-left">
+		<p class="class-name">
+		{{=data.teachingName}}
+		{{ for(var prop in data.classes) { }}
+        ({{=data.classes[prop].className}})
+        {{ } }}
+		</p>
+		<p class="class-sign">
+		授课名称
+		</p>
+		</div>
+		<div class="card-right">
+		<p class="class-name">
+		30
+		</p>
+		<p class="class-sign">
+		备选题
+		</p>
+		</div>
+		</div>
+		</section>
+		{{~}}
+	</script>
 	<script type="text/javascript">
+		var termId = null;
+		var dot = doT.template($('#courseTemplate').html());
 		apiready = function() {
+			var cTerm = $api.strToJson(($PrefsUtils.getPref('defultTerm')));
+			if (null != cTerm) {
+				termId = cTerm.termId;
+			}
+			getAlernativeList();
 		};
+		//获取测试课程列表
+		function getAlernativeList() {
+			var httpParams = {};
+			httpParams.termId = termId;
+			var configParams = {};
+			configParams.listBody = $('#list');
+			configParams.dotBody = dot;
+			configParams.hintPbody = $('.aui-content');
+			configParams.loadMore = true;
+			configParams.pull2Refresh = true;
+			configParams.emptyImg = '../../image/zanwushuju.png';
+			configParams.errorImg = '../../image/zanwushuju.png';
+			$httpUtils.initGetList("teacher/v1/getTeachingList", httpParams, configParams);
+		}
+
 		//查看备选题
-		function alternative() {
-			$BaseUI.openWin("quizzesQuestion", "./alternative-question.html");
+		function alternative(courseId) {
+			$BaseUI.openWin("quizzesQuestion", "./alternative-question.html",{courseId:courseId});
+			
 		}
 
 		//返回按钮

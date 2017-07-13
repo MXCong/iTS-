@@ -37,24 +37,15 @@
 		</header>
 	</body>
 	<script type="text/javascript">
+		var courseId = null;
 		apiready = function() {
 			api.parseTapmode();
-			var header = $api.byId('aui-header');
-			//$api.fixStatusBar(header);
-			var headerPos = $api.offset(header);
-			var body_h = $api.offset($api.dom('body')).h;
-			api.openFrame({
-				name : 'alternative-question-frame',
-				url : 'alternative-question-frame.html',
-				bounces : false,
-				rect : {
-					x : 0,
-					y : headerPos.h,
-					w : 'auto',
-					h : 'auto'
-				}
-			})
+			courseId = api.pageParam.courseId;
+			$BaseUI.openFrame('alternative-question-frame', './alternative-question-frame.html', {
+				courseId : courseId
+			});
 			api.parseTapmode();
+			
 		};
 		$api.addEvt($api.byId('filter'), 'click', function() {
 			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');

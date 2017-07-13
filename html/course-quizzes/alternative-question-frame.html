@@ -7,9 +7,16 @@
 		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
 		<link rel="stylesheet" type="text/css" href="../../css/aui.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/aui-pull-refresh.css" />
 		<script type="text/javascript" src="../../script/api.js"></script>
-		<script src="../../script/utils/baseUI.js"></script>
-		<script src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/jquery.min.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-pull-refresh.js"></script>
+		<script type="text/javascript" src="../../script/utils/doT.min.js"></script>
+		<script type="text/javascript" src="../../script/utils/baseUI.js"></script>
+		<script type="text/javascript" src="../../script/utils/md5.js"></script>
+		<script type="text/javascript" src="../../script/http/httpUtils.js"></script>
+		<script type="text/javascript" src="../../script/aui/aui-dialog.js" ></script>
+		<script type="text/javascript" src="../../script/utils/prefsUtils.js"></script>
 		<style>
 			.aui-grid .aui-iconfont {
 				font-size: 1.0rem;
@@ -39,146 +46,10 @@
 	</head>
 	<body>
 		
-		<section class="aui-content">
+		<section class="aui-content aui-refresh-content">
 			<div class="aui-card-list">
 				<div class="aui-card-list-content">
 					<ul class="aui-list aui-media-list" id="checkList">
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											十万个为什么？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner" >
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											十万个为什么？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											十万个为什么？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的软件是怎么炼成的？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox">
-								</div>
-							</div>
-						</li>
-						<li class="aui-list-item aui-list-item-middle">
-							<div class="aui-media-list-item-inner">
-								<div class="aui-list-item-inner" >
-									<div class="aui-list-item-text" onclick="showDetail();">
-										<div class="aui-list-item-title aui-font-size-16">
-											十万个为什么？
-										</div>
-									</div>
-									<div class="aui-list-item-text">
-										知识点：绪论
-									</div>
-								</div>
-								<div style="margin-right: 15px;">
-									<input type="checkbox" class="aui-checkbox" >
-								</div>
-							</div>
-						</li>
 					</ul>
 				</div>
 			</div>
@@ -206,10 +77,40 @@
 			</div>
 		</section>
 	</body>
+	<script id="questTemplate" type="text/template">
+		{{~ it:data }}
+		<li class="aui-list-item aui-list-item-middle">
+		<div class="aui-media-list-item-inner">
+		<div class="aui-list-item-inner" >
+		<div class="aui-list-item-text" onclick="showDetail();">
+		<div class="aui-list-item-title aui-font-size-16">
+		{{data.content}}
+		</div>
+		</div>
+		<div class="aui-list-item-text">
+		知识点：{{data.pointName}}
+		</div>
+		</div>
+		<div style="margin-right: 15px;">
+		<input type="checkbox" class="aui-checkbox">
+		</div>
+		</div>
+		</li>
+		{{~}}
+		
+	</script>
 	<script type="text/javascript">
+		
+		var courseId = null;
+	    var dot = doT.template($('#questTemplate').html());
 		apiready = function() {
+			courseId = api.pageParam.courseId;
+            getQuestionList(courseId);
 			api.parseTapmode();
+			
 		};
+		
+		
 		$api.addEvt($api.byId('filter'), 'click', function() {
 			$api.removeCls($api.byId('titleArror'), 'aui-icon-top');
 			$api.addCls($api.byId('titleArror'), 'aui-icon-down');
@@ -218,6 +119,21 @@
 				$api.addCls($api.byId('titleArror'), 'aui-icon-top');
 			});
 		});
+
+		//获取备选题列表
+	    function getQuestionList(id) {
+	    	var httpParams={}
+	    	httpParams.courseId = courseId;
+            var configParams = {};
+            configParams.listBody = $('#checkList');
+            configParams.dotBody = dot;
+            configParams.hintPbody = $('.aui-content');
+            configParams.emptyImg = '../../image/zanwushuju.png';
+			configParams.errorImg = '../../image/zanwushuju.png';
+            $httpUtils.initGetList('teacher/v1/getAlternativeQuestion', httpParams, configParams);
+            
+        }
+
 
 		//问题详情
 		function showDetail() {
