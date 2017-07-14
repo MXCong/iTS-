@@ -56,15 +56,15 @@
 		</section>
 		<section class="aui-grid">
 			<div class="aui-row">
-				<div class="aui-col-xs-4"  id="checkall">
+				<div class="aui-col-xs-4"  id="checkall" onclick="checkOr()">
 					<i class="aui-iconfont aui-icon-correct" id="cicon"></i>
 					<div class="aui-grid-label" id="all">
 						全选
 					</div>
 				</div>
-				<div class="aui-col-xs-4">
+				<div class="aui-col-xs-4" id="delete">
 					<i class="aui-iconfont aui-icon-trash"></i>
-					<div class="aui-grid-label">
+					<div class="aui-grid-label" id="remove">
 						移除
 					</div>
 				</div>
@@ -79,7 +79,7 @@
 	</body>
 	<script id="questTemplate" type="text/template">
 		{{~ it:data }}
-		<li class="aui-list-item aui-list-item-middle">
+		<li id="{{=data.questionsId}}" class="aui-list-item aui-list-item-middle">
 		<div class="aui-media-list-item-inner">
 		<div class="aui-list-item-inner" >
 		<div class="aui-list-item-text" onclick="showDetail();">
@@ -92,7 +92,7 @@
 		</div>
 		</div>
 		<div style="margin-right: 15px;">
-		<input type="checkbox" class="aui-checkbox">
+		<input type="checkbox" name="checkbox" class="aui-checkbox">
 		</div>
 		</div>
 		</li>
@@ -152,22 +152,56 @@
 		
 		
 		//全选或全不选
-		var bRt=true;		
-		$("#checkall").click(function(){
-		if(bRt){
-			$("#checkList :checkbox").prop("checked", true);
-			$("#all").html("取消全选");
-			$("#cicon").attr("class", "aui-iconfont aui-icon-close");
-			bRt=false;
-		}else{
-			$("#checkList :checkbox").prop("checked", false);
-			$("#all").html("全选");
-			$("#cicon").attr("class", "aui-iconfont aui-icon-correct");
-			bRt=true;
-			}
-	
-		}); 
+		function checkedOr(){
+			
+			var bRt=true;	
+			$("#checkall").click(function(){
+			if(bRt){
+				$("#checkList :checkbox").prop("checked", true);
+				$("#all").html("取消全选");
+				$("#cicon").attr("class", "aui-iconfont aui-icon-close");
+				bRt=false;
+			}else{
+				$("#checkList :checkbox").prop("checked", false);
+				$("#all").html("全选");
+				$("#cicon").attr("class", "aui-iconfont aui-icon-correct");
+				bRt=true;
+				}
 		
+			 }); 
+		}
+		//移除
 		
+		function removeQuestion(id){
+			var id = null;
+			
+			$("input[name=checkbox]").each(function(){
+				if ($(this).attr("checked")){
+					id = $(this).closest("li").attr("id");
+					$(this).closest("li").remove();
+				}
+			})
+			
+			var params = {};
+			params.status = status;
+			
+			$httpUtils.post('question/v1/updateStatus', params, function(ret) {
+				if (ret) {
+				alert(status);	
+				}, function(msg) {
+				if (msg) {
+					api.toast({
+						msg : msg
+					});
+				}
+			});
+		
+		}
+		
+//		$("#remove").click(function(){
+//			
+//          $("input[name='checkbox']:checked").closest("li").remove();
+//          
+//      });
 	</script>
 </html>

@@ -148,6 +148,7 @@
         apiready = function() {
             initBroadCast();
             courseId = api.pageParam.courseId;
+            
             if (courseId) {
                 $BaseUI.showPrgDlg('正在加载..');
                 getTeachingDetail();

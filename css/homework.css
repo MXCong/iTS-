@@ -73,7 +73,7 @@ color: #999;
 
 /*timetable-edit_f*/
 .aui-list-item .inpmr input[type='text']{ text-align: right;}
-.aui-list-item .inpmr input[type='date']{ text-align: right; font-size: 0.7rem; color:#999;}
+.aui-list-item .inpmr input[type='date']{ text-align: right; font-size: 0.7rem; color:#999; line-height:2.2rem;}
 .aui-list-item .aui-list-item-input{ padding-right:0px; }
 
 

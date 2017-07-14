@@ -283,6 +283,7 @@
     h.getList = function(url, httpParams, page, configParams) {
         httpParams.page = page;
         h.post(url, httpParams, function(ret) {
+        	
             $BaseUI.hidePrgDlg();
             $BaseUI.cancelRefresh();
             $BaseUI.hideHint();
@@ -302,6 +303,7 @@
                 }
             }
         }, function(msg) {
+        	
             $BaseUI.hidePrgDlg();
             $BaseUI.cancelRefresh();
             var errorMsg = configParams.errorStr ? configParams.errorStr : '网络错误,请稍后重试！';

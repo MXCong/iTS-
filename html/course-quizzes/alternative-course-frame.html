@@ -62,6 +62,7 @@
 		var termId = null;
 		var dot = doT.template($('#courseTemplate').html());
 		apiready = function() {
+			initBroadCast();
 			var cTerm = $api.strToJson(($PrefsUtils.getPref('defultTerm')));
 			if (null != cTerm) {
 				termId = cTerm.termId;
@@ -88,6 +89,17 @@
 			$BaseUI.openWin("quizzesQuestion", "./alternative-question.html",{courseId:courseId});
 			
 		}
+		
+		/**
+         *初始化授课修改事件
+         */
+        function initBroadCast() {
+            api.addEventListener({
+                name : 'teachingChanged'
+            }, function(ret, err) {
+                getTeachingList();
+            });
+        }
 
 		//返回按钮
 		function fnClo() {
